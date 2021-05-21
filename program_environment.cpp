@@ -2,7 +2,7 @@
 
 std::map<std::string, InstructionBase*> ProgramEnvironment::instructionClasses
 {
-    { "mov", new Mov() }
+    { "mov", new Mov() }, { "cmp", new Cmp() }
 };
 
 ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory, bool dumpFull)

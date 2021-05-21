@@ -4,7 +4,7 @@
 
 #undef ABSOLUTE
 
-class Mov : public InstructionBase
+class Cmp : public InstructionBase
 {
 public:
 
@@ -18,5 +18,4 @@ public:
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
                      CPU& processor);
-
 };

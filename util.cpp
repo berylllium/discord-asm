@@ -72,8 +72,21 @@ K asmutils::map_get_key_from_value(std::map<K, V> map, V value)
     return NULL;
 }
 
+std::string asmutils::throw_undefined_registry_exception(std::string line, std::string registry)
+{
+    std::stringstream ss;
+    ss << "Exception while compiling code. At line: `" << line << "`. UndefinedRegistryException: Given registry: `" << registry << "`, was not found.";
 
+    return ss.str();
+}
 
+std::string asmutils::throw_undefined_instruction_exception(std::string line, std::string instruction)
+{
+    std::stringstream ss;
+    ss << "Exception while compiling code. At line: `" << line << "`. UndefinedInstructionException: Given instruction: `" << instruction << "`, was not found.";
+
+    return ss.str();
+}
 
 std::string asmutils::throw_possible_overflow_exception(std::string line, int provided, int expected)
 {

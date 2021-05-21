@@ -22,8 +22,36 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
     { "mov", { 
         { ADDRESSING_MODES::ABSOLUTE, 0x01 },
         { ADDRESSING_MODES::IMMEDIATE, 0x02 },
-        { ADDRESSING_MODES::REGISTRY, 0x0C },
-        { ADDRESSING_MODES::REGISTRY_POINTER, 0x03 }
+        { ADDRESSING_MODES::REGISTRY, 0x03 },
+        { ADDRESSING_MODES::REGISTRY_POINTER, 0x04 }
+    } },
+    { "cmp", {
+        { ADDRESSING_MODES::IMMEDIATE, 0x05 },
+    } },
+    { "jne", {
+        { ADDRESSING_MODES::ABSOLUTE, 0x06 },
+    } },
+    { "pusha", {
+        { ADDRESSING_MODES::IMPLICIT, 0x07 },
+    } },
+    { "popa", {
+        { ADDRESSING_MODES::IMPLICIT, 0x08 },
+    } },
+    { "jmp", {
+        { ADDRESSING_MODES::ABSOLUTE, 0x09 },
+    } },
+    { "jne", {
+        { ADDRESSING_MODES::ABSOLUTE, 0x0A },
+    } },
+    { "call", {
+        { ADDRESSING_MODES::ABSOLUTE, 0x0B },
+    } },
+    { "ret", {
+        { ADDRESSING_MODES::IMPLICIT, 0x0C },
+    } },
+    { "prtc", {
+        { ADDRESSING_MODES::IMMEDIATE, 0x0D },
+        { ADDRESSING_MODES::REGISTRY, 0x0E },
     } },
 };
 

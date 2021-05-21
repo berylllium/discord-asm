@@ -1,8 +1,5 @@
 #include "mov.h"
 
-Mov::Mov() : InstructionBase()
-{}
-
 bool Mov::compile(std::string line,
                   MEM& memory,
                   CPU& processor,

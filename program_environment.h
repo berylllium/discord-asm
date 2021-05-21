@@ -4,6 +4,7 @@
 #include "processor.h"
 
 #include "instructions/mov.h"
+#include "instructions/cmp.h"
 
 
 class ProgramEnvironment
