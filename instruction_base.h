@@ -26,7 +26,8 @@ public:
                          std::string& consoleBuffer) = 0;
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
-                     CPU& processor) = 0;
+                     CPU& processor,
+                     std::string& consoleBuffer) = 0;
 
 protected:
 

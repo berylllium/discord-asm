@@ -4,7 +4,7 @@
 
 #undef ABSOLUTE
 
-class Cmp : public InstructionBase
+class Ret : public InstructionBase
 {
 public:
 
@@ -19,4 +19,5 @@ public:
                      MEM& memory,
                      CPU& processor,
                      std::string& consoleBuffer);
+
 };

@@ -4,7 +4,7 @@
 
 #undef ABSOLUTE
 
-class Cmp : public InstructionBase
+class Call : public InstructionBase
 {
 public:
 

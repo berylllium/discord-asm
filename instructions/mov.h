@@ -17,6 +17,7 @@ public:
                          std::string& consoleBuffer);
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
-                     CPU& processor);
+                     CPU& processor,
+                     std::string& consoleBuffer);
 
 };

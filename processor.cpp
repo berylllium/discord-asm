@@ -40,9 +40,6 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
     { "jmp", {
         { ADDRESSING_MODES::ABSOLUTE, 0x09 },
     } },
-    { "jne", {
-        { ADDRESSING_MODES::ABSOLUTE, 0x0A },
-    } },
     { "call", {
         { ADDRESSING_MODES::ABSOLUTE, 0x0B },
     } },
@@ -52,7 +49,12 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
     { "prtc", {
         { ADDRESSING_MODES::IMMEDIATE, 0x0D },
         { ADDRESSING_MODES::REGISTRY, 0x0E },
+        { ADDRESSING_MODES::REGISTRY_POINTER, 0x0A },
     } },
+    { "add", {
+        { ADDRESSING_MODES::IMMEDIATE, 0x0F },
+    } },
+
 };
 
 std::map<std::string, Byte> CPU::registerEncoding

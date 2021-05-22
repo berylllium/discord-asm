@@ -5,6 +5,12 @@
 
 #include "instructions/mov.h"
 #include "instructions/cmp.h"
+#include "instructions/jne.h"
+#include "instructions/add.h"
+#include "instructions/call.h"
+#include "instructions/ret.h"
+#include "instructions/prtc.h"
+#include "instructions/jmp.h"
 
 
 class ProgramEnvironment
@@ -22,7 +28,13 @@ public:
     ~ProgramEnvironment();
 
 public:
-    static std::map<std::string, InstructionBase*> instructionClasses;
+    std::map<std::string, InstructionBase*> instructionClasses
+    {
+        { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
+        { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
+        { "prtc", new Prtc() }, { "ret", new Ret() }
+    };
+
     std::string consoleBuffer;
 
     std::string preMemoryDump;

@@ -1,6 +1,6 @@
-#include "cmp.h"
+#include "add.h"
 
-bool Cmp::compile(std::string line,
+bool Add::compile(std::string line,
                   MEM& memory,
                   CPU& processor,
                   Word& compilerPointer,
@@ -44,13 +44,11 @@ bool Cmp::compile(std::string line,
             }
         }
     }
-    else { consoleBuffer += asmutils::throw_undefined_registry_exception(line, tokens[1]); return false; }
-    
 
     return true;
 }
 
-bool Cmp::run(ADDRESSING_MODES addressingMode,
+bool Add::run(ADDRESSING_MODES addressingMode,
               MEM& memory,
               CPU& processor,
               std::string& consoleBuffer)
@@ -71,8 +69,7 @@ bool Cmp::run(ADDRESSING_MODES addressingMode,
         uint64_t value = 0;
         std::memcpy(&value, &bytes[0], asmutils::get_register_size(destinationEncoding) / 8);
 
-        // Setting Flags
-        processor.CF = (processor.get_register_value(destinationEncoding) == value);
+        processor.set_register_value(destinationEncoding, processor.get_register_value(destinationEncoding) + value);
     }break;
     }
 

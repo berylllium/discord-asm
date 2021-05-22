@@ -1,10 +1,5 @@
 #include "program_environment.h"
 
-std::map<std::string, InstructionBase*> ProgramEnvironment::instructionClasses
-{
-    { "mov", new Mov() }, { "cmp", new Cmp() }
-};
-
 ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory, bool dumpFull)
 {
     this->dumpMemory = dumpMemory;
@@ -12,6 +7,13 @@ ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory,
     this->dumpFull = dumpFull;
 
     this->consoleBuffer = "";
+
+    instructionClasses =
+    {
+        { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
+        { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
+        { "prtc", new Prtc() }, { "ret", new Ret() }
+    };
 }
 
 ProgramEnvironment::~ProgramEnvironment() 
@@ -67,6 +69,30 @@ bool ProgramEnvironment::compile()
         {
             if (!instructionClasses[tokens[0]]->compile(lines[i], memory, processor, compilerPointer,
                                                        tokens, labelReferences, consoleBuffer)) return false;
+        } // VVV Check if instruction is pseudo op
+        else if (tokens[0] == "db")
+        {
+            for (int j = 1; j < tokens.size(); j++) // Things to write
+            {
+                if (tokens[j].find('"') == 0 && tokens[j].rfind('"') == tokens[j].size() - 1) // String
+                {
+                    std::string insideString = tokens[j].substr(1, tokens[j].size() - 2);
+                    const char* charArray = insideString.c_str();
+
+                    for (int k = 0; k < tokens[j].length() - 2; k++)
+                    {
+                        memory[compilerPointer++] = charArray[k];
+                    }
+                }
+                else if (asmutils::valid_hex_string(tokens[j])) // Byte literal
+                {
+                    if (asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)) <= 8)
+                    {
+                        memory[compilerPointer++] = std::stoi(tokens[j], nullptr, 16);
+                    }
+                    else { consoleBuffer += asmutils::throw_possible_overflow_exception(lines[i], asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)), 8); return false; }
+                }
+            }
         }
         else // Check for label
         {
@@ -104,6 +130,17 @@ bool ProgramEnvironment::compile()
         }
     }
 
+    // Link labels
+    for (auto const& x : labelReferences)
+    {
+        if (labels.count(x.first) > 0) // Label exists
+        {
+            memory[x.second] = (Byte)(labels[x.first] & 0x00FF);
+            memory[x.second + 1] = (Byte)(labels[x.first] >> 8);
+        }
+        else { consoleBuffer += asmutils::throw_label_not_found_exception(x.second, x.first); return false; }
+    }
+
     preMemoryDump = dump_memory();
 
     return true;
@@ -113,6 +150,8 @@ bool ProgramEnvironment::run()
 {
     while (processor.PC < MEM::MAX_MEM)
     {
+    start_run_loop:
+
         Byte instruction = processor.read_byte(memory);
         
         for (auto const& x : CPU::instructionOpCodes) // String (name), Map (All addressing modes and op codes available)
@@ -121,7 +160,8 @@ bool ProgramEnvironment::run()
             {
                 if (y.second == instruction)
                 {
-                    instructionClasses[x.first]->run(y.first, memory, processor);
+                    instructionClasses[x.first]->run(y.first, memory, processor, consoleBuffer);
+                    goto start_run_loop; // Have to do this to break out of 2 for loops
                 }
             }
         }
