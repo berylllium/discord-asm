@@ -8,6 +8,31 @@ On a more serious note, discord-asm is a bot that interprets user written assemb
 
 > Note that many features are currently not implemented. Check [Instructions](#instructions) for all of the currently implemented instructions.
 
+## Examples
+Hello World
+```x86asm
+&
+mov si, STR
+call printf
+jmp EXIT
+
+printf:
+  str_loop:
+    mov al, [si]
+    cmp al, 0x00
+    jne print_char
+    ret
+
+  print_char:
+    prtc [si]
+    add si, 0x01
+    jmp str_loop
+
+STR: db "Hello", 0x20, "World!!!!", 0x00
+
+EXIT:
+```
+
 ## Environments
 You can imagine environments as a standalone CPU. Each time the user sends assembly code, a new environment gets created and populated with the given information.
 ### Architecture
