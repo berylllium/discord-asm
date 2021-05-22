@@ -6,7 +6,7 @@ bool Jmp::compile(std::string line,
                   Word& compilerPointer,
                   std::vector<std::string>& tokens,
                   std::map<std::string, Word>& labelReferences,
-                  std::string& consoleBuffer)
+                  ClientTasks& clientTasks)
 {
     memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::ABSOLUTE];
 
@@ -19,7 +19,7 @@ bool Jmp::compile(std::string line,
 bool Jmp::run(ADDRESSING_MODES addressingMode,
               MEM& memory,
               CPU& processor,
-              std::string& consoleBuffer)
+              ClientTasks& clientTasks)
 {
     switch (addressingMode)
     {

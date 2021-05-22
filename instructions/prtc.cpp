@@ -1,12 +1,12 @@
 #include "prtc.h"
 
 bool Prtc::compile(std::string line,
-                  MEM& memory,
-                  CPU& processor,
-                  Word& compilerPointer,
-                  std::vector<std::string>& tokens,
-                  std::map<std::string, Word>& labelReferences,
-                  std::string& consoleBuffer)
+                   MEM& memory,
+                   CPU& processor,
+                   Word& compilerPointer,
+                   std::vector<std::string>& tokens,
+                   std::map<std::string, Word>& labelReferences,
+                   ClientTasks& clientTasks)
 {
     if (CPU::registerEncoding.count(tokens[1]) > 0) // Value is another register
     {
@@ -32,7 +32,7 @@ bool Prtc::compile(std::string line,
         }
         else // Throw overflow
         {
-            consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), 8);
+            clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), 8);
             return false;
         }
     }
@@ -41,22 +41,22 @@ bool Prtc::compile(std::string line,
 }
 
 bool Prtc::run(ADDRESSING_MODES addressingMode,
-              MEM& memory,
-              CPU& processor,
-              std::string& consoleBuffer)
+               MEM& memory,
+               CPU& processor,
+               ClientTasks& clientTasks)
 {
     switch (addressingMode)
     {
     case ADDRESSING_MODES::IMMEDIATE:
     {
         Byte character = processor.read_byte(memory);
-        consoleBuffer += (char)character;
+        clientTasks.consoleBuffer += (char)character;
     }break;
     case ADDRESSING_MODES::REGISTRY:
     {
         Byte sourceEncoding = processor.read_byte(memory);
 
-        consoleBuffer += (char)processor.get_register_value(sourceEncoding);
+        clientTasks.consoleBuffer += (char)processor.get_register_value(sourceEncoding);
     }break;
     case ADDRESSING_MODES::REGISTRY_POINTER:
     {
@@ -64,7 +64,7 @@ bool Prtc::run(ADDRESSING_MODES addressingMode,
 
         Byte registerWithPointer = processor.read_byte(memory);
 
-        consoleBuffer += (char)memory[processor.get_register_value(registerWithPointer)];
+        clientTasks.consoleBuffer += (char)memory[processor.get_register_value(registerWithPointer)];
     }break;
     }
 

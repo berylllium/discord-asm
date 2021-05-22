@@ -14,9 +14,9 @@ public:
                          Word& compilerPointer,
                          std::vector<std::string>& tokens,
                          std::map<std::string, Word>& labelReferences,
-                         std::string& consoleBuffer);
+                         ClientTasks& clientTasks);
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
                      CPU& processor,
-                     std::string& consoleBuffer);
+                     ClientTasks& clientTasks);
 };

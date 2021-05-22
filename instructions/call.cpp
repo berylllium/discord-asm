@@ -1,12 +1,12 @@
 #include "call.h"
 
 bool Call::compile(std::string line,
-                  MEM& memory,
-                  CPU& processor,
-                  Word& compilerPointer,
-                  std::vector<std::string>& tokens,
-                  std::map<std::string, Word>& labelReferences,
-                  std::string& consoleBuffer)
+                   MEM& memory,
+                   CPU& processor,
+                   Word& compilerPointer,
+                   std::vector<std::string>& tokens,
+                   std::map<std::string, Word>& labelReferences,
+                   ClientTasks& clientTasks)
 {
     memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::ABSOLUTE];
 
@@ -19,7 +19,7 @@ bool Call::compile(std::string line,
 bool Call::run(ADDRESSING_MODES addressingMode,
                MEM& memory,
                CPU& processor,
-               std::string& consoleBuffer)
+               ClientTasks& clientTasks)
 {
     switch (addressingMode)
     {

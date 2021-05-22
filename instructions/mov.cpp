@@ -6,7 +6,7 @@ bool Mov::compile(std::string line,
                   Word& compilerPointer,
                   std::vector<std::string>& tokens,
                   std::map<std::string, Word>& labelReferences,
-                  std::string& consoleBuffer)
+                  ClientTasks& clientTasks)
 {
     if (CPU::registerEncoding.count(tokens[1]) > 0) // Destination exists
     {
@@ -51,7 +51,7 @@ bool Mov::compile(std::string line,
             }
             else // Throw overflow
             {
-                consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
+                clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
                 //client->throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
                 return false;
             }
@@ -70,7 +70,7 @@ bool Mov::compile(std::string line,
         std::stringstream ss;
         ss << "Exception while compiling code. At line: `" << line << "`. ArgumentException: Provided argument `" << tokens[1] << "` is an invalid argument.";
 
-        consoleBuffer += ss.str();
+        clientTasks.consoleBuffer += ss.str();
         //client->sendMessageToChannel(ss.str());
         return false;
     }
@@ -81,7 +81,7 @@ bool Mov::compile(std::string line,
 bool Mov::run(ADDRESSING_MODES addressingMode,
               MEM& memory,
               CPU& processor,
-              std::string& consoleBuffer)
+              ClientTasks& clientTasks)
 {
     switch (addressingMode)
     {

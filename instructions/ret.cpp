@@ -6,7 +6,7 @@ bool Ret::compile(std::string line,
                   Word& compilerPointer,
                   std::vector<std::string>& tokens,
                   std::map<std::string, Word>& labelReferences,
-                  std::string& consoleBuffer)
+                  ClientTasks& clientTasks)
 {
     memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::IMPLICIT];
 
@@ -16,7 +16,7 @@ bool Ret::compile(std::string line,
 bool Ret::run(ADDRESSING_MODES addressingMode,
               MEM& memory,
               CPU& processor,
-              std::string& consoleBuffer)
+              ClientTasks& clientTasks)
 {
     switch (addressingMode)
     {

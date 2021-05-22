@@ -6,8 +6,6 @@ ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory,
     this->programCode = programCode;
     this->dumpFull = dumpFull;
 
-    this->consoleBuffer = "";
-
     instructionClasses =
     {
         { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
@@ -68,7 +66,7 @@ bool ProgramEnvironment::compile()
         if (instructionClasses.count(tokens[0])) // Instruction Exists
         {
             if (!instructionClasses[tokens[0]]->compile(lines[i], memory, processor, compilerPointer,
-                                                       tokens, labelReferences, consoleBuffer)) return false;
+                                                       tokens, labelReferences, clientTasks)) return false;
         } // VVV Check if instruction is pseudo op
         else if (tokens[0] == "db")
         {
@@ -90,7 +88,7 @@ bool ProgramEnvironment::compile()
                     {
                         memory[compilerPointer++] = std::stoi(tokens[j], nullptr, 16);
                     }
-                    else { consoleBuffer += asmutils::throw_possible_overflow_exception(lines[i], asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)), 8); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(lines[i], asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)), 8); return false; }
                 }
             }
         }
@@ -106,7 +104,7 @@ bool ProgramEnvironment::compile()
                     {
                         labels[labelName] = compilerPointer;
                     }
-                    else { consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
                 }
                 else // Line is token + inline line
                 {
@@ -116,7 +114,7 @@ bool ProgramEnvironment::compile()
                     {
                         labels[labelName] = compilerPointer;
                     }
-                    else { consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
 
                     tokens.erase(tokens.begin());
 
@@ -138,7 +136,7 @@ bool ProgramEnvironment::compile()
             memory[x.second] = (Byte)(labels[x.first] & 0x00FF);
             memory[x.second + 1] = (Byte)(labels[x.first] >> 8);
         }
-        else { consoleBuffer += asmutils::throw_label_not_found_exception(x.second, x.first); return false; }
+        else { clientTasks.consoleBuffer += asmutils::throw_label_not_found_exception(x.second, x.first); return false; }
     }
 
     preMemoryDump = dump_memory();
@@ -160,7 +158,7 @@ bool ProgramEnvironment::run()
             {
                 if (y.second == instruction)
                 {
-                    instructionClasses[x.first]->run(y.first, memory, processor, consoleBuffer);
+                    instructionClasses[x.first]->run(y.first, memory, processor, clientTasks);
                     goto start_run_loop; // Have to do this to break out of 2 for loops
                 }
             }

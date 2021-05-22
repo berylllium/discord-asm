@@ -45,9 +45,9 @@ void BotClient::onMessage(SleepyDiscord::Message message)
 
                 uploadFile(currentChannel, fileName, "Post-execution State of Memory:");
 
-                if (!environment.consoleBuffer.empty())
+                if (!environment.clientTasks.consoleBuffer.empty())
                 {
-                    sendMessageToChannel(environment.consoleBuffer);
+                    sendMessageToChannel(environment.clientTasks.consoleBuffer);
                 }
             }
         }

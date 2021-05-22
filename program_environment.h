@@ -2,6 +2,7 @@
 
 #include "memory.h"
 #include "processor.h"
+#include "client_tasks.h"
 
 #include "instructions/mov.h"
 #include "instructions/cmp.h"
@@ -35,10 +36,10 @@ public:
         { "prtc", new Prtc() }, { "ret", new Ret() }
     };
 
-    std::string consoleBuffer;
-
     std::string preMemoryDump;
     std::string postMemoryDump;
+
+    ClientTasks clientTasks;
 
     bool compile();
 

@@ -5,6 +5,7 @@
 #include "memory.h"
 #include "definitions.h"
 #include "util.h"
+#include "client_tasks.h"
 
 class BotClient;
 struct CPU;
@@ -23,11 +24,11 @@ public:
                          Word& compilerPointer,
                          std::vector<std::string>& tokens,
                          std::map<std::string, Word>& labelReferences,
-                         std::string& consoleBuffer) = 0;
+                         ClientTasks& clientTasks) = 0;
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
                      CPU& processor,
-                     std::string& consoleBuffer) = 0;
+                     ClientTasks& clientTasks) = 0;
 
 protected:
 
