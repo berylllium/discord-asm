@@ -6,6 +6,8 @@
 #include "memory.h"
 #include "instruction_base.h"
 
+#pragma warning(disable : 4333)
+
 struct Register
 {
     Word value;
@@ -54,7 +56,6 @@ public:
 
     static std::map<std::string, std::map<ADDRESSING_MODES, Byte>> instructionOpCodes;
     static std::map<std::string, Byte> registerEncoding;
-    static constexpr Byte POINTER_INDICATOR = 0xF8;
 
     CPU()
     {
@@ -86,15 +87,30 @@ public:
 
     Byte pull_stack(MEM& memory)
     {
-        SP.value--;
         Byte toReturn = memory[SP.value];
-        memory[SP.value] = 0x00;
+        memory[--SP.value] = 0x00;
         return toReturn;
+    }
+
+    Word pull_stack_word(MEM& memory)
+    {
+        Byte a = memory[SP.value];
+        Byte b = memory[SP.value];
+        memory[--SP.value] = 0x00;
+        memory[--SP.value] = 0x00;
+
+        return a | (b << 8);
     }
 
     void push_stack(Byte toWrite, MEM& memory)
     {
         memory[SP.value++] = toWrite;
+    }
+
+    void push_stack(Word toWrite, MEM& memory)
+    {
+        memory[SP.value++] = toWrite & 0x00FF;
+        memory[SP.value++] = toWrite >> 8;
     }
 
     uint64_t get_register_value(Byte encoding);

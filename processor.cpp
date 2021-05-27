@@ -101,6 +101,7 @@ uint64_t CPU::get_register_value(Byte encoding)
     case 0x16: return R14;
     case 0x17: return R15;
     }
+    return 0;
 }
 
 void CPU::set_register_value(Byte encoding, uint64_t value)

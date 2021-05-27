@@ -41,6 +41,7 @@ bool asmutils::compare_register_size(Byte encoding, int minSize)
     if (minSize <= 8) return true;
     else if (minSize <= 16) return encoding >= 0x08;
     else if (minSize <= 64) return encoding >= 0x10;
+    return false;
 }
 
 int asmutils::get_register_size(Byte encoding)
@@ -48,6 +49,7 @@ int asmutils::get_register_size(Byte encoding)
     if (encoding <= 0x07) return 8;
     else if (encoding <= 0x0F) return 16;
     else return 64;
+    return false;
 }
 
 template<class K, class V>

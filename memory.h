@@ -1,6 +1,7 @@
 #pragma once
 
 #include "definitions.h"
+#include <stdexcept>
 
 struct MEM
 {
@@ -23,12 +24,12 @@ struct MEM
     Byte operator[](Word address) const // Read byte
     {
         if (address < MAX_MEM) return data[address];
-        //else throw std::overflow_error("tried indexing address greater than 0xFFFF");
+        else throw std::overflow_error("tried indexing address greater than 0xFFFF");
     }
 
     Byte& operator[](Word address) // Write byte
     {
         if (address < MAX_MEM) return data[address];
-        //else throw std::overflow_error("tried indexing address greater than 0xFFFF");
+        else throw std::overflow_error("tried indexing address greater than 0xFFFF");
     }
 };
