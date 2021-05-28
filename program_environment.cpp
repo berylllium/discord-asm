@@ -139,7 +139,7 @@ bool ProgramEnvironment::compile()
         else { clientTasks.consoleBuffer += asmutils::throw_label_not_found_exception(x.second, x.first); return false; }
     }
 
-    preMemoryDump = dump_memory();
+    if (dumpMemory) preMemoryDump = dump_memory();
 
     return true;
 }
@@ -165,34 +165,36 @@ bool ProgramEnvironment::run()
         }
     }
 
-    postMemoryDump = dump_memory();
+    if (dumpMemory) postMemoryDump = dump_memory();
 
     return true;
 }
 
 std::string ProgramEnvironment::dump_memory()
 {
-
     std::stringstream ss;
     ss << std::hex;
 
     // Processor State
-    ss << "Processor State:\n    16-bit Registers:   AX = " << std::setw(4) << std::setfill('0') << processor.AX.value << " | " <<
-        "BX = " << std::setw(4) << std::setfill('0') << processor.BX.value << " | " <<
-        "CX = " << std::setw(4) << std::setfill('0') << processor.CX.value <<
-        "\n                        DX = " << std::setw(4) << processor.DX.value << " | " <<
-        "SI = " << std::setw(4) << std::setfill('0') << processor.SI.value << " | " <<
-        "DI = " << std::setw(4) << std::setfill('0') << processor.DI.value <<
-        "\n                        SP = " << std::setw(4) << std::setfill('0') << processor.SP.value << " | " <<
-        "BP = " << std::setw(4) << std::setfill('0') << processor.BP.value << " | " <<
-        "\n    64-bit Registers:   R8  = " << std::setw(16) << std::setfill('0') << processor.R8 << " | " <<
-        "R9  = " << std::setw(16) << std::setfill('0') << processor.R9 <<
-        "\n                        R10 = " << std::setw(16) << std::setfill('0') << processor.R10 << " | " <<
-        "R11 = " << std::setw(16) << std::setfill('0') << processor.R11 <<
-        "\n                        R12 = " << std::setw(16) << std::setfill('0') << processor.R12 << " | " <<
-        "R13 = " << std::setw(16) << std::setfill('0') << processor.R13 <<
-        "\n                        R14 = " << std::setw(16) << std::setfill('0') << processor.R14 << " | " <<
-        "R15 = " << std::setw(16) << std::setfill('0') << processor.R15 << "\n\n";
+    if (dumpFull)
+    {
+        ss << "Processor State:\n    16-bit Registers:   AX = " << std::setw(4) << std::setfill('0') << processor.AX.value << " | " <<
+            "BX = " << std::setw(4) << std::setfill('0') << processor.BX.value << " | " <<
+            "CX = " << std::setw(4) << std::setfill('0') << processor.CX.value <<
+            "\n                        DX = " << std::setw(4) << processor.DX.value << " | " <<
+            "SI = " << std::setw(4) << std::setfill('0') << processor.SI.value << " | " <<
+            "DI = " << std::setw(4) << std::setfill('0') << processor.DI.value <<
+            "\n                        SP = " << std::setw(4) << std::setfill('0') << processor.SP.value << " | " <<
+            "BP = " << std::setw(4) << std::setfill('0') << processor.BP.value << " | " <<
+            "\n    64-bit Registers:   R8  = " << std::setw(16) << std::setfill('0') << processor.R8 << " | " <<
+            "R9  = " << std::setw(16) << std::setfill('0') << processor.R9 <<
+            "\n                        R10 = " << std::setw(16) << std::setfill('0') << processor.R10 << " | " <<
+            "R11 = " << std::setw(16) << std::setfill('0') << processor.R11 <<
+            "\n                        R12 = " << std::setw(16) << std::setfill('0') << processor.R12 << " | " <<
+            "R13 = " << std::setw(16) << std::setfill('0') << processor.R13 <<
+            "\n                        R14 = " << std::setw(16) << std::setfill('0') << processor.R14 << " | " <<
+            "R15 = " << std::setw(16) << std::setfill('0') << processor.R15 << "\n\n";
+    }
 
     ss << "Offset    00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f\n";
 
@@ -202,5 +204,42 @@ std::string ProgramEnvironment::dump_memory()
         ss << std::setw(2) << std::setfill('0') << (int)memory[i] << " ";
     }
 
-    return ss.str();
+    std::string memoryDump = ss.str();
+
+    if (!dumpFull)
+    {
+        ss.str(std::string()); // Clear string stream
+        ss << "Offset    00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f\n\n";
+        std::deque<std::string> lines = asmutils::split_deque(memoryDump, '\n');
+
+        lines.pop_front(); // Remove header
+        lines.pop_front(); // Remove empty line
+
+        std::string lastLine;
+        bool first = true;
+
+        for (int i = 0; i < lines.size(); i++)
+        {
+            std::string currentLine = lines[i].substr(10);
+
+            if (currentLine != lastLine)
+            {
+                ss << lines[i] << "\n";
+                lastLine = currentLine;
+                first = true;
+            }
+            else
+            {
+                if (first)
+                {
+                    ss << "*\n";
+                    first = false;
+                }
+            }
+        }
+
+        memoryDump = ss.str();
+    }
+
+    return memoryDump;
 }

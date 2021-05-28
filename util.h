@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <vector>
 #include <map>
+#include <deque>
 #include "definitions.h"
 
 namespace asmutils
@@ -19,6 +20,9 @@ namespace asmutils
     // fail when the register map is edited in any way.
     bool compare_register_size(Byte encoding, int minSize);
     int get_register_size(Byte encoding);
+
+    std::vector<std::string> split(std::string text, char delim);
+    std::deque<std::string> split_deque(std::string text, char delim);
 
     template<class K, class V>
     bool map_contains_value(std::map<K, V> map, V value);

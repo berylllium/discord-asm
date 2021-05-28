@@ -52,6 +52,31 @@ int asmutils::get_register_size(Byte encoding)
     return false;
 }
 
+std::vector<std::string> asmutils::split(std::string text, char delim)
+{
+    std::string line;
+    std::vector<std::string> vec;
+    std::stringstream ss(text);
+    while (std::getline(ss, line, delim))
+    {
+        vec.push_back(line);
+    }
+    return vec;
+}
+
+std::deque<std::string> asmutils::split_deque(std::string text, char delim)
+{
+    std::string line;
+    std::deque<std::string> deq;
+    std::stringstream ss(text);
+    while (std::getline(ss, line, delim))
+    {
+        deq.push_back(line);
+    }
+    return deq;
+}
+
+
 template<class K, class V>
 bool asmutils::map_contains_value(std::map<K, V> map, V value)
 {
