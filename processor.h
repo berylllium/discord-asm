@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include "definitions.h"
-#include "memory.h"
+#include "mymemory.h"
 #include "instruction_base.h"
 
 #pragma warning(disable : 4333)

@@ -1,4 +1,4 @@
-.vs/
+.vscode/
 out/
-token.txt
 deps/
+build/

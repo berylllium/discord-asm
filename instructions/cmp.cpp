@@ -69,7 +69,7 @@ bool Cmp::run(ADDRESSING_MODES addressingMode,
         }
 
         uint64_t value = 0;
-        std::memcpy(&value, &bytes[0], asmutils::get_register_size(destinationEncoding) / 8);
+        memcpy(&value, &bytes[0], asmutils::get_register_size(destinationEncoding) / 8);
 
         // Setting Flags
         processor.CF = (processor.get_register_value(destinationEncoding) == value);

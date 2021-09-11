@@ -2,7 +2,7 @@
 
 #include <map>
 #include "processor.h"
-#include "memory.h"
+#include "mymemory.h"
 #include "definitions.h"
 #include "util.h"
 #include "client_tasks.h"

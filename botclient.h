@@ -11,7 +11,6 @@ public:
     using SleepyDiscord::DiscordClient::DiscordClient;
 
     std::string prefix = ",";
-
     BotClient(const char* token);
 
     void onMessage(SleepyDiscord::Message message) override;
