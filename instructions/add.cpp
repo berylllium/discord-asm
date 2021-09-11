@@ -67,7 +67,7 @@ bool Add::run(ADDRESSING_MODES addressingMode,
         }
 
         uint64_t value = 0;
-        std::memcpy(&value, &bytes[0], asmutils::get_register_size(destinationEncoding) / 8);
+        memcpy(&value, &bytes[0], asmutils::get_register_size(destinationEncoding) / 8);
 
         processor.set_register_value(destinationEncoding, processor.get_register_value(destinationEncoding) + value);
     }break;

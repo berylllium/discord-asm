@@ -74,7 +74,7 @@ bool BotClient::setUserSettings(uint64_t id, UserSettings settings)
 
     std::vector<std::string> lines = asmutils::split(ss.str(), '\n');
 
-    for (int i = 0; i < lines.size(); i++)
+    for (long long unsigned int i = 0; i < lines.size(); i++)
     {
         std::vector<std::string> tokens = asmutils::split(lines[i], ' ');
 
@@ -128,7 +128,7 @@ UserSettings BotClient::getUserSettings(uint64_t id)
 
     std::vector<std::string> lines = asmutils::split(ss.str(), '\n');
 
-    for (int i = 0; i < lines.size(); i++)
+    for (long long unsigned int i = 0; i < lines.size(); i++)
     {
         std::vector<std::string> tokens = asmutils::split(lines[i], ' ');
 
