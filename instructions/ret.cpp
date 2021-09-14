@@ -24,6 +24,10 @@ bool Ret::run(ADDRESSING_MODES addressingMode,
     {
         processor.PC = processor.DI.value;
     }break;
+    case ADDRESSING_MODES::ABSOLUTE:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;

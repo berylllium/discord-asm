@@ -71,6 +71,11 @@ bool Add::run(ADDRESSING_MODES addressingMode,
 
         processor.set_register_value(destinationEncoding, processor.get_register_value(destinationEncoding) + value);
     }break;
+    case ADDRESSING_MODES::ABSOLUTE:
+    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;

@@ -32,6 +32,11 @@ bool Popa::run(ADDRESSING_MODES addressingMode,
         processor.CX.value = processor.pull_stack_word(memory);
         processor.AX.value = processor.pull_stack_word(memory);
     }break;
+    case ADDRESSING_MODES::IMMEDIATE:
+    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;

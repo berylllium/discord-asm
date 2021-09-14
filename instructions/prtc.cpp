@@ -66,6 +66,9 @@ bool Prtc::run(ADDRESSING_MODES addressingMode,
 
         clientTasks.consoleBuffer += (char)memory[processor.get_register_value(registerWithPointer)];
     }break;
+    case ADDRESSING_MODES::ABSOLUTE:
+    case ADDRESSING_MODES::IMPLICIT:
+    return false;
     }
 
     return true;

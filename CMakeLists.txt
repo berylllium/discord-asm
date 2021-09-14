@@ -8,8 +8,7 @@ project ("discord-asm")
 add_definitions(-D_WEBSOCKETPP_CPP11_THREAD_)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-#set(OPENSSL_ROOT_DIR "C:\\vcpkg\\installed\\x64-windows")
-
+set(OPENSSL_ROOT_DIR "C:\\src\\vcpkg\\installed\\x64-windows")
 
 # Add source to this project's executable.
 add_executable (discord-asm "discord-asm.cpp" "discord-asm.h" "botclient.h" "botclient.cpp"  "util.h"

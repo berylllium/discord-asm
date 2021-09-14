@@ -121,6 +121,8 @@ bool Mov::run(ADDRESSING_MODES addressingMode,
 
         processor.set_register_value(destinationEncoding, value);
     }break;
+    case ADDRESSING_MODES::IMPLICIT:
+    return false;
     }
 
     return true;

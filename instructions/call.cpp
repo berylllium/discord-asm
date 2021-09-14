@@ -29,6 +29,11 @@ bool Call::run(ADDRESSING_MODES addressingMode,
         processor.DI.value = processor.PC;
         processor.PC = address;
     }break;
+    case ADDRESSING_MODES::IMMEDIATE:
+    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;

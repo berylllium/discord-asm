@@ -32,6 +32,11 @@ bool Pusha::run(ADDRESSING_MODES addressingMode,
         processor.push_stack(processor.SI.value, memory);
         processor.push_stack(processor.DI.value, memory);
     }break;
+    case ADDRESSING_MODES::IMMEDIATE:
+    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;

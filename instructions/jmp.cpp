@@ -27,6 +27,11 @@ bool Jmp::run(ADDRESSING_MODES addressingMode,
     {
         processor.PC = processor.read_byte(memory) | (processor.read_byte(memory) << 8);
     }break;
+    case ADDRESSING_MODES::IMMEDIATE:
+    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::REGISTRY:
+    case ADDRESSING_MODES::REGISTRY_POINTER:
+    return false;
     }
 
     return true;
