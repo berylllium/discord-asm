@@ -1,6 +1,6 @@
 #include "program_environment.h"
 
-ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory, bool dumpFull)
+ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings)
 {
     this->dumpMemory = dumpMemory;
     this->programCode = programCode;
@@ -12,6 +12,12 @@ ProgramEnvironment::ProgramEnvironment(std::string programCode, bool dumpMemory,
         { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
         { "prtc", new Prtc() }, { "ret", new Ret() }
     };
+
+    // Preload environment settings
+
+    for (int i = 0; i < environmentSettings.preloadedRegisters.size(); i++) {
+        processor.set_register_value(environmentSettings.preloadedRegisters[i].first, environmentSettings.preloadedRegisters[i].second);
+    }
 }
 
 ProgramEnvironment::~ProgramEnvironment() 

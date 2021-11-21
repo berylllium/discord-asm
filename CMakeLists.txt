@@ -1,14 +1,9 @@
 ﻿# CMakeList.txt : CMake project for discord-asm, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.6)
+cmake_minimum_required (VERSION 3.8)
 
 project ("discord-asm")
-
-add_definitions(-D_WEBSOCKETPP_CPP11_THREAD_)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(OPENSSL_ROOT_DIR "C:\\src\\vcpkg\\installed\\x64-windows")
 
 # Add source to this project's executable.
 add_executable (discord-asm "discord-asm.cpp" "discord-asm.h" "botclient.h" "botclient.cpp"  "util.h"
@@ -17,9 +12,11 @@ add_executable (discord-asm "discord-asm.cpp" "discord-asm.h" "botclient.h" "bot
  "instructions/jne.h" "instructions/jne.cpp" "instructions/jmp.h" "instructions/jmp.cpp" "instructions/call.h" 
  "instructions/call.cpp" "instructions/ret.h" "instructions/ret.cpp" "instructions/prtc.h" "instructions/prtc.cpp" 
  "instructions/add.h" "instructions/add.cpp"   "client_tasks.h" "client_tasks.cpp" "instructions/pusha.h" 
- "instructions/pusha.cpp" "instructions/popa.h" "instructions/popa.cpp" "user_settings.h")
+ "instructions/pusha.cpp" "instructions/popa.h" "instructions/popa.cpp" "user_settings.h"  "database_handler.h" "environment_settings.h")
 
-# TODO: Add tests and install targets if needed.
+# Add tests and install targets if needed.
 
 add_subdirectory(deps/sleepy-discord)
 target_link_libraries(discord-asm sleepy-discord)
+
+target_compile_features(discord-asm PUBLIC cxx_std_20)

@@ -4,6 +4,9 @@
 #include "program_environment.h"
 #include "definitions.h"
 #include "user_settings.h"
+#include "database_handler.h"
+#include "environment_settings.h"
+#include <utility>
 
 class BotClient : public SleepyDiscord::DiscordClient
 {
@@ -21,9 +24,7 @@ public:
 private:
     SleepyDiscord::Snowflake<SleepyDiscord::Channel> currentChannel;
 
-    bool setUserSettings(uint64_t id, UserSettings settings);
-    UserSettings getUserSettings(uint64_t id);
+    void handleCommands(SleepyDiscord::Message *message);
 
-    void handleCommands(SleepyDiscord::Message message);
-
+    void runEnvironment(ProgramEnvironment *environment, UserSettings userSettings);
 };

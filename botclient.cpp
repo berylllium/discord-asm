@@ -13,48 +13,18 @@ void BotClient::onMessage(SleepyDiscord::Message message)
 
     std::string messageContent = message.content;
 
-    if (messageContent.find(prefix, 0) == 0) { handleCommands(message); return; }
+
+    if (messageContent.find(prefix, 0) == 0) { handleCommands(&message); return; }
 
     if (messageContent.find("```\n&\n", 0) == 0)
     {
         messageContent = messageContent.substr(6, messageContent.length() - 9);
 
-        UserSettings settings = getUserSettings(message.author.ID.number());
+        UserSettings settings = database_handler::getUserSettings(message.author.ID.number());
 
-        ProgramEnvironment environment(messageContent, settings.dumpMemory, settings.dumpFull);
+        ProgramEnvironment environment(messageContent, settings.dumpMemory, settings.dumpFull, EnvironmentSettings {});
 
-        std::string fileName = "memoryDump.txt";
-
-        if (environment.compile())
-        {
-            if (settings.dumpMemory)
-            {
-                if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
-                std::ofstream outfile(fileName);
-                outfile << environment.preMemoryDump;
-                outfile.close();
-
-                uploadFile(currentChannel, fileName, "Pre-execution State of Memory:");
-            }
-
-            if (environment.run())
-            {
-                if (settings.dumpMemory)
-                {
-                    if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
-                    std::ofstream outfile(fileName);
-                    outfile << environment.postMemoryDump;
-                    outfile.close();
-
-                    uploadFile(currentChannel, fileName, "Post-execution State of Memory:");
-                }
-
-                if (!environment.clientTasks.consoleBuffer.empty())
-                {
-                    sendMessageToChannel(environment.clientTasks.consoleBuffer);
-                }
-            }
-        }
+        runEnvironment(&environment, settings);
     }
 }
 
@@ -63,101 +33,11 @@ void BotClient::sendMessageToChannel(std::string message)
     sendMessage(currentChannel, message);
 }
 
-bool BotClient::setUserSettings(uint64_t id, UserSettings settings)
+void BotClient::handleCommands(SleepyDiscord::Message *message)
 {
-    std::ifstream infile("db.txt");
-    std::stringstream ss;
+    std::vector<std::string> tokens = asmutils::split(message->content, ' ');
 
-    ss << infile.rdbuf();
-
-    infile.close();
-
-    std::vector<std::string> lines = asmutils::split(ss.str(), '\n');
-
-    for (long long unsigned int i = 0; i < lines.size(); i++)
-    {
-        std::vector<std::string> tokens = asmutils::split(lines[i], ' ');
-
-        if (std::stoull(tokens[0]) == id) // User exists in data base
-        {
-            std::stringstream lineStream;
-
-            lineStream << id << " " << std::to_string(settings.dumpMemory) << " " << std::to_string(settings.dumpFull);
-
-            lines[i] == lineStream.str();
-
-            lineStream.str(std::string());
-
-            std::copy(lines.begin(), lines.end(), std::ostream_iterator<std::string>(lineStream, "\n"));
-
-            std::ofstream out("db.txt");
-            out << lineStream.str();;
-            out.close();
-
-            return true;
-        }
-    }
-
-    // User does not exist in data base
-
-    std::stringstream lineStream;
-
-    lineStream << id << " " << std::to_string(settings.dumpMemory) << " " << std::to_string(settings.dumpFull);
-
-    lines.push_back(lineStream.str());
-
-    lineStream.str(std::string());
-
-    std::copy(lines.begin(), lines.end(), std::ostream_iterator<std::string>(lineStream, "\n"));
-
-    std::ofstream out("db.txt");
-    out << lineStream.str();;
-    out.close();
-
-    return false;
-}
-
-UserSettings BotClient::getUserSettings(uint64_t id)
-{
-    std::ifstream infile("db.txt");
-    std::stringstream ss;
-
-    ss << infile.rdbuf();
-
-    infile.close();
-
-    std::vector<std::string> lines = asmutils::split(ss.str(), '\n');
-
-    for (long long unsigned int i = 0; i < lines.size(); i++)
-    {
-        std::vector<std::string> tokens = asmutils::split(lines[i], ' ');
-
-        if (std::stoull(tokens[0]) == id)
-        {
-            bool dumpMemory, dumpFull;;
-            std::istringstream(tokens[1]) >> dumpMemory;
-            std::istringstream(tokens[2]) >> dumpFull;
-
-            return UserSettings
-            {
-                dumpMemory,
-                dumpFull
-            };
-        }
-    }
-
-    return UserSettings
-    {
-        false,
-        false
-    };
-}
-
-void BotClient::handleCommands(SleepyDiscord::Message message)
-{
-    std::vector<std::string> tokens = asmutils::split(message.content, ' ');
-
-    uint64_t userId = message.ID.number();
+    uint64_t userId = message->author.ID.number();
 
     if (tokens[0].substr(1) == "settings")
     {
@@ -166,15 +46,15 @@ void BotClient::handleCommands(SleepyDiscord::Message message)
         {
             if (tokens[2] == "true")
             {
-                UserSettings settings = getUserSettings(userId);
+                UserSettings settings = database_handler::getUserSettings(userId);
                 settings.dumpMemory = true;
-                setUserSettings(userId, settings);
+                database_handler::setUserSettings(userId, settings);
             }
             else if (tokens[2] == "false")
             {
-                UserSettings settings = getUserSettings(userId);
+                UserSettings settings = database_handler::getUserSettings(userId);
                 settings.dumpMemory = false;
-                setUserSettings(userId, settings);
+                database_handler::setUserSettings(userId, settings);
             }
             else sendMessageToChannel("Third argument must be either 'true' or 'false'.");
         }
@@ -182,17 +62,107 @@ void BotClient::handleCommands(SleepyDiscord::Message message)
         {
             if (tokens[2] == "true")
             {
-                UserSettings settings = getUserSettings(userId);
+                UserSettings settings = database_handler::getUserSettings(userId);
                 settings.dumpFull = true;
-                setUserSettings(userId, settings);
+                database_handler::setUserSettings(userId, settings);
             }
             else if (tokens[2] == "false")
             {
-                UserSettings settings = getUserSettings(userId);
+                UserSettings settings = database_handler::getUserSettings(userId);
                 settings.dumpFull = false;
-                setUserSettings(userId, settings);
+                database_handler::setUserSettings(userId, settings);
             }
             else sendMessageToChannel("Third argument must be either 'true' or 'false'.");
+        }
+    }
+    else if (tokens[0].substr(1) == "savelast")
+    {
+        if (tokens.size() <= 1) { sendMessageToChannel("Must provide save name after command."); return; }
+
+        std::stringstream ss; // Path to programsaves dir
+        ss << database_handler::USER_DATA_PATH << "\\" << userId << "\\" << database_handler::PROGRAM_SAVES_DIR_NAME;
+
+
+        std::ifstream src(ss.str() + "\\_programsave_last.txt");
+        std::ofstream dst(ss.str() + "\\programsave_" + tokens[1] + ".txt");
+
+        dst << src.rdbuf();
+
+        dst.close();
+        src.close();
+    }
+    else if (tokens[0].substr(1) == "runsaved")
+    {
+        if (tokens.size() <= 1) { sendMessageToChannel("Must provide save name after command."); return; }
+
+        EnvironmentSettings envSettings;
+
+        // Check for register preloads
+        if (tokens.size() > 2 && (tokens.size() - 2) % 2 == 0) // Valid amount of parameters
+        {
+            for (int i = 2; i - 2 < (tokens.size() - 2) / 2; i += 2) // Loop through every pair
+            {
+                // Check if valid register
+                if (CPU::registerEncoding.count(tokens[i]) > 0)
+                {
+                    try
+                    {
+                        envSettings.preloadedRegisters.push_back(std::pair(CPU::registerEncoding[tokens[i]], std::stoull(tokens[i+1])));
+                    } catch (std::invalid_argument e)
+                    {
+                        sendMessageToChannel("Provided register preload value is not a valid number.");
+                        return;
+                    } catch (std::out_of_range e)
+                    {
+                        sendMessageToChannel("Provided register preload value is out of range.");
+                        return;
+                    }
+                } 
+            }
+        }
+
+        UserSettings settings = database_handler::getUserSettings(message->author.ID.number());
+
+        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), settings.dumpMemory, settings.dumpFull, envSettings);
+
+        runEnvironment(&environment, settings);
+    }
+}
+
+void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings userSettings)
+{
+    std::string fileName = "memoryDump.txt";
+
+    if (environment->compile())
+    {
+        if (environment->dumpMemory)
+        {
+            if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
+            std::ofstream outfile(fileName);
+            outfile << environment->preMemoryDump;
+            outfile.close();
+
+            uploadFile(currentChannel, fileName, "Pre-execution State of Memory:");
+        }
+
+        if (environment->run())
+        {
+            database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
+
+                if (userSettings.dumpMemory)
+                {
+                    if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
+                    std::ofstream outfile(fileName);
+                    outfile << environment->postMemoryDump;
+                    outfile.close();
+
+                    uploadFile(currentChannel, fileName, "Post-execution State of Memory:");
+                }
+
+            if (!environment->clientTasks.consoleBuffer.empty())
+            {
+                sendMessageToChannel(environment->clientTasks.consoleBuffer);
+            }
         }
     }
 }

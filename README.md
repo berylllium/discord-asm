@@ -83,3 +83,16 @@ The CPU uses flags for logical operatios. These are the currently implemented fl
 
 > Coming soon
 
+# Developers
+
+## Formats
+### UserSettings
+
+List is in order of elements:
+1. User ID (u64)
+2. dumpMemory (bool)
+3. dumpFull (bool)
+
+Optionally the user is also able to preload registers in the environment (for use as parameters for example). This is encoded by first appending the number of registers affected and then all the affected registers after eachother in this format: `[registerIdentifier] [preloadedValue]`.
+
+For example: `93472039409823709 0 1 2 2 64 11 600`.
