@@ -24,15 +24,16 @@ bool Prtc::compile(std::string line,
     }
     else if (asmutils::valid_hex_string(tokens[1])) // Value is a number
     {
-        int valueBits = asmutils::get_bits(std::stoull(tokens[1], nullptr, 16));
+        int value = std::stoull(tokens[1], nullptr, 16);
+        int valueBits = asmutils::get_bits(value);
         if (8 >= valueBits)
         {
             memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::IMMEDIATE];
-            memory[compilerPointer++] = std::stoull(tokens[1], nullptr, 16);
+            memory[compilerPointer++] = value;
         }
         else // Throw overflow
         {
-            clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), 8);
+            clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, valueBits, 8);
             return false;
         }
     }
