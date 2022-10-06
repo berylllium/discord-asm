@@ -24,7 +24,7 @@ private:
     MEM memory;
 
 public:
-    ProgramEnvironment(std::string programCode, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings);
+    ProgramEnvironment(std::string programCode, uint64_t channelId, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings);
     ~ProgramEnvironment();
 
 public:

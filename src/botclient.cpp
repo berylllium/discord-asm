@@ -1,7 +1,7 @@
 #include "botclient.h"
 
 BotClient::BotClient(std::string token) : dpp::cluster(token,
-dpp::i_default_intents | dpp::i_message_content)
+dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_messages)
 {
     on_message_create([this](const dpp::message_create_t &m) {
         onMessage(&m);
@@ -26,7 +26,7 @@ const void BotClient::onMessage(const dpp::message_create_t *event)
 
         UserSettings settings = database_handler::getUserSettings(event->msg.author.id);
 
-        ProgramEnvironment environment(messageContent, settings.dumpMemory, settings.dumpFull, EnvironmentSettings {});
+        ProgramEnvironment environment(messageContent, event->msg.channel_id, settings.dumpMemory, settings.dumpFull, EnvironmentSettings {});
 
         runEnvironment(&environment, settings);
     }
@@ -127,7 +127,7 @@ void BotClient::handleCommands(const dpp::message *message)
 
         UserSettings settings = database_handler::getUserSettings(message->author.id);
 
-        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), settings.dumpMemory, settings.dumpFull, envSettings);
+        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), message->channel_id, settings.dumpMemory, settings.dumpFull, envSettings);
 
         runEnvironment(&environment, settings);
     }
