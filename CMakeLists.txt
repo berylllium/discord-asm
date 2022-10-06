@@ -44,6 +44,8 @@ set(D_ASM_SOURCES
     instructions/pusha.cpp
     instructions/popa.hpp
     instructions/popa.cpp
+    instructions/prtn.hpp
+    instructions/prtn.cpp
     user_settings.hpp
     database_handler.hpp
     environment_settings.hpp

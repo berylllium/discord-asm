@@ -31,43 +31,43 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
     {
         "cmp",
         {
-            { ADDRESSING_MODES::IMMEDIATE, 0x05 },
+            { ADDRESSING_MODES::IMMEDIATE, 0x05 }
         }
     },
     {
         "jne",
         {
-            { ADDRESSING_MODES::ABSOLUTE, 0x06 },
+            { ADDRESSING_MODES::ABSOLUTE, 0x06 }
         }
     },
     {
         "pusha",
         {
-            { ADDRESSING_MODES::IMPLICIT, 0x07 },
+            { ADDRESSING_MODES::IMPLICIT, 0x07 }
         }
     },
     {
         "popa",
         {
-            { ADDRESSING_MODES::IMPLICIT, 0x08 },
+            { ADDRESSING_MODES::IMPLICIT, 0x08 }
         }
     },
     {
         "jmp",
         {
-            { ADDRESSING_MODES::ABSOLUTE, 0x09 },
+            { ADDRESSING_MODES::ABSOLUTE, 0x09 }
         }
     },
     {
         "call",
         {
-            { ADDRESSING_MODES::ABSOLUTE, 0x0B },
+            { ADDRESSING_MODES::ABSOLUTE, 0x0B }
         }
     },
     {
         "ret",
         {
-            { ADDRESSING_MODES::IMPLICIT, 0x0C },
+            { ADDRESSING_MODES::IMPLICIT, 0x0C }
         }
     },
     {
@@ -75,13 +75,22 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
         {
             { ADDRESSING_MODES::IMMEDIATE, 0x0D },
             { ADDRESSING_MODES::REGISTRY, 0x0E },
-            { ADDRESSING_MODES::REGISTRY_POINTER, 0x0A },
+            { ADDRESSING_MODES::REGISTRY_POINTER, 0x0A }
         }
     },
     {
         "add",
         {
             { ADDRESSING_MODES::IMMEDIATE, 0x0F },
+            { ADDRESSING_MODES::REGISTRY, 0x10 }
+        }
+    },
+    {
+        "prtn",
+        {
+            { ADDRESSING_MODES::IMMEDIATE, 0x11 },
+            { ADDRESSING_MODES::REGISTRY, 0x12 },
+            { ADDRESSING_MODES::REGISTRY_POINTER, 0x13 }
         }
     }
 };

@@ -7,12 +7,12 @@ ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channel
     this->dumpFull = dumpFull;
     this->channelSentFromId = channelId;
 
-    instructionClasses =
-    {
-        { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
-        { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
-        { "prtc", new Prtc() }, { "ret", new Ret() }
-    };
+    // instructionClasses =
+    // {
+    //     { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
+    //     { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
+    //     { "prtc", new Prtc() }, { "ret", new Ret() }
+    // };
 
     // Preload environment settings
 
