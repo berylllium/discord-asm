@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "definitions.h"
+#include "definitions.hpp"
 
 struct ClientTasks
 {

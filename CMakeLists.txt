@@ -9,44 +9,44 @@ execute_process(
 list(TRANSFORM DPP_LIBS REPLACE "\n" "")
 
 set(D_ASM_SOURCES
+    discord-asm.hpp
     discord-asm.cpp
-    discord-asm.h
-    botclient.h
+    botclient.hpp
     botclient.cpp
-    util.h
+    util.hpp
     util.cpp
-    instruction_base.h
-    instructions/mov.h
+    instruction_base.hpp
+    instructions/mov.hpp
     instructions/mov.cpp
-    mymemory.h
-    definitions.h
-    processor.h
+    mymemory.hpp
+    definitions.hpp
+    processor.hpp
     processor.cpp
-    program_environment.h
+    program_environment.hpp
     program_environment.cpp
-    instructions/cmp.h
+    instructions/cmp.hpp
     instructions/cmp.cpp
-    instructions/jne.h
+    instructions/jne.hpp
     instructions/jne.cpp
-    instructions/jmp.h
+    instructions/jmp.hpp
     instructions/jmp.cpp
-    instructions/call.h
+    instructions/call.hpp
     instructions/call.cpp
-    instructions/ret.h
+    instructions/ret.hpp
     instructions/ret.cpp
-    instructions/prtc.h
+    instructions/prtc.hpp
     instructions/prtc.cpp
-    instructions/add.h
+    instructions/add.hpp
     instructions/add.cpp
-    client_tasks.h
+    client_tasks.hpp
     client_tasks.cpp
-    instructions/pusha.h
+    instructions/pusha.hpp
     instructions/pusha.cpp
-    instructions/popa.h
+    instructions/popa.hpp
     instructions/popa.cpp
-    user_settings.h
-    database_handler.h
-    environment_settings.h
+    user_settings.hpp
+    database_handler.hpp
+    environment_settings.hpp
 )
 list (TRANSFORM D_ASM_SOURCES PREPEND "src/")
 

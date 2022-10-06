@@ -1,24 +1,12 @@
 #pragma once
 
-#include <map>
-#include "processor.h"
-#include "mymemory.h"
-#include "definitions.h"
-#include "util.h"
-#include "client_tasks.h"
+#include "../instruction_base.hpp"
 
-#pragma warning(disable : 4244)
+#undef ABSOLUTE
 
-class BotClient;
-struct CPU;
-
-class InstructionBase
+class Add : public InstructionBase
 {
 public:
-
-    InstructionBase() {}
-
-public:  
 
     virtual bool compile(std::string line,
                          MEM& memory,
@@ -26,12 +14,9 @@ public:
                          Word& compilerPointer,
                          std::vector<std::string>& tokens,
                          std::map<std::string, Word>& labelReferences,
-                         ClientTasks& clientTasks) = 0;
+                         ClientTasks& clientTasks);
     virtual bool run(ADDRESSING_MODES addressingMode,
                      MEM& memory,
                      CPU& processor,
-                     ClientTasks& clientTasks) = 0;
-
-protected:
-
+                     ClientTasks& clientTasks);
 };

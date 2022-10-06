@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../instruction_base.h"
+#include "../instruction_base.hpp"
 
 #undef ABSOLUTE
 
-class Jmp : public InstructionBase
+class Cmp : public InstructionBase
 {
 public:
 

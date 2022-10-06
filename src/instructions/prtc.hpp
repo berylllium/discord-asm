@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../instruction_base.h"
+#include "../instruction_base.hpp"
 
 #undef ABSOLUTE
 
-class Mov : public InstructionBase
+class Prtc : public InstructionBase
 {
 public:
 
@@ -19,5 +19,4 @@ public:
                      MEM& memory,
                      CPU& processor,
                      ClientTasks& clientTasks);
-
 };

@@ -1,4 +1,4 @@
-﻿#include "discord-asm.h"
+﻿#include "discord-asm.hpp"
 
 int main()
 {

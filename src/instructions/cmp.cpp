@@ -1,4 +1,4 @@
-#include "cmp.h"
+#include "cmp.hpp"
 
 bool Cmp::compile(std::string line,
                   MEM& memory,

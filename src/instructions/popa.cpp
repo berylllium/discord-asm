@@ -1,4 +1,4 @@
-#include "popa.h"
+#include "popa.hpp"
 
 bool Popa::compile(std::string line,
                    MEM& memory,

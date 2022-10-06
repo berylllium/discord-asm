@@ -1,11 +1,11 @@
 #pragma once
 
 #include "dpp/dpp.h"
-#include "program_environment.h"
-#include "definitions.h"
-#include "user_settings.h"
-#include "database_handler.h"
-#include "environment_settings.h"
+#include "program_environment.hpp"
+#include "definitions.hpp"
+#include "user_settings.hpp"
+#include "database_handler.hpp"
+#include "environment_settings.hpp"
 #include <utility>
 
 class BotClient : public dpp::cluster

@@ -1,4 +1,4 @@
-#include "program_environment.h"
+#include "program_environment.hpp"
 
 ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channelId, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings)
 {

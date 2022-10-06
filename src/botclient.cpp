@@ -1,4 +1,4 @@
-#include "botclient.h"
+#include "botclient.hpp"
 
 BotClient::BotClient(std::string token) : dpp::cluster(token,
 dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_messages)

@@ -2,9 +2,9 @@
 
 #include <string>
 #include <map>
-#include "definitions.h"
-#include "mymemory.h"
-#include "instruction_base.h"
+#include "definitions.hpp"
+#include "mymemory.hpp"
+#include "instruction_base.hpp"
 
 #pragma warning(disable : 4333)
 

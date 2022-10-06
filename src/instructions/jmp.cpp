@@ -1,4 +1,4 @@
-#include "jmp.h"
+#include "jmp.hpp"
 
 bool Jmp::compile(std::string line,
                   MEM& memory,

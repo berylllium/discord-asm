@@ -1,4 +1,4 @@
-#include "prtc.h"
+#include "prtc.hpp"
 
 bool Prtc::compile(std::string line,
                    MEM& memory,

@@ -1,4 +1,4 @@
-#include "jne.h"
+#include "jne.hpp"
 
 bool Jne::compile(std::string line,
                   MEM& memory,

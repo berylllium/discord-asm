@@ -1,4 +1,4 @@
-#include "pusha.h"
+#include "pusha.hpp"
 
 bool Pusha::compile(std::string line,
                     MEM& memory,

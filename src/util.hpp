@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include <deque>
-#include "definitions.h"
+#include "definitions.hpp"
 
 namespace asmutils
 {

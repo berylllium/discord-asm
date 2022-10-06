@@ -1,19 +1,19 @@
 #pragma once
 
 #include <deque>
-#include "mymemory.h"
-#include "processor.h"
-#include "client_tasks.h"
-#include "environment_settings.h"
+#include "mymemory.hpp"
+#include "processor.hpp"
+#include "client_tasks.hpp"
+#include "environment_settings.hpp"
 
-#include "instructions/mov.h"
-#include "instructions/cmp.h"
-#include "instructions/jne.h"
-#include "instructions/add.h"
-#include "instructions/call.h"
-#include "instructions/ret.h"
-#include "instructions/prtc.h"
-#include "instructions/jmp.h"
+#include "instructions/mov.hpp"
+#include "instructions/cmp.hpp"
+#include "instructions/jne.hpp"
+#include "instructions/add.hpp"
+#include "instructions/call.hpp"
+#include "instructions/ret.hpp"
+#include "instructions/prtc.hpp"
+#include "instructions/jmp.hpp"
 
 
 class ProgramEnvironment
