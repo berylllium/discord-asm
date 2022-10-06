@@ -43,6 +43,8 @@ public:
 
     ClientTasks clientTasks;
 
+    uint64_t channelSentFromId;
+
     bool compile();
 
     bool run();

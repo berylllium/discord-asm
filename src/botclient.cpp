@@ -1,26 +1,30 @@
 #include "botclient.h"
 
-BotClient::BotClient(const char* token) : SleepyDiscord::DiscordClient(token, SleepyDiscord::USER_CONTROLED_THREADS)
+BotClient::BotClient(std::string token) : dpp::cluster(token,
+dpp::i_default_intents | dpp::i_message_content)
 {
-
+    on_message_create([this](const dpp::message_create_t &m) {
+        onMessage(&m);
+        
+        });
 }
 
-void BotClient::onMessage(SleepyDiscord::Message message)
+const void BotClient::onMessage(const dpp::message_create_t *event)
 {
-    if (message.author.bot) return;
+    if (event->msg.author.is_bot()) return;
     
-    currentChannel = message.channelID;
+    currentChannel = event->msg.channel_id;
 
-    std::string messageContent = message.content;
+    std::string messageContent = event->msg.content;
 
 
-    if (messageContent.find(prefix, 0) == 0) { handleCommands(&message); return; }
+    if (messageContent.find(prefix, 0) == 0) { handleCommands(&event->msg); return; }
 
     if (messageContent.find("```\n&\n", 0) == 0)
     {
         messageContent = messageContent.substr(6, messageContent.length() - 9);
 
-        UserSettings settings = database_handler::getUserSettings(message.author.ID.number());
+        UserSettings settings = database_handler::getUserSettings(event->msg.author.id);
 
         ProgramEnvironment environment(messageContent, settings.dumpMemory, settings.dumpFull, EnvironmentSettings {});
 
@@ -28,20 +32,20 @@ void BotClient::onMessage(SleepyDiscord::Message message)
     }
 }
 
-void BotClient::sendMessageToChannel(std::string message)
+void BotClient::sendMessageToChannel(dpp::snowflake channelId, std::string content)
 {
-    sendMessage(currentChannel, message);
+    message_create(dpp::message(channelId, content));
 }
 
-void BotClient::handleCommands(SleepyDiscord::Message *message)
+void BotClient::handleCommands(const dpp::message *message)
 {
     std::vector<std::string> tokens = asmutils::split(message->content, ' ');
 
-    uint64_t userId = message->author.ID.number();
+    uint64_t userId = message->author.id;
 
     if (tokens[0].substr(1) == "settings")
     {
-        if (tokens.size() < 3) { sendMessageToChannel("User has not provided enough arguments. Please try again."); return; }
+        if (tokens.size() < 3) { sendMessageToChannel(message->channel_id, "User has not provided enough arguments. Please try again."); return; }
         if (tokens[1] == "dumpMemory")
         {
             if (tokens[2] == "true")
@@ -56,7 +60,7 @@ void BotClient::handleCommands(SleepyDiscord::Message *message)
                 settings.dumpMemory = false;
                 database_handler::setUserSettings(userId, settings);
             }
-            else sendMessageToChannel("Third argument must be either 'true' or 'false'.");
+            else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
         }
         else if (tokens[1] == "dumpFull")
         {
@@ -72,12 +76,12 @@ void BotClient::handleCommands(SleepyDiscord::Message *message)
                 settings.dumpFull = false;
                 database_handler::setUserSettings(userId, settings);
             }
-            else sendMessageToChannel("Third argument must be either 'true' or 'false'.");
+            else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
         }
     }
     else if (tokens[0].substr(1) == "savelast")
     {
-        if (tokens.size() <= 1) { sendMessageToChannel("Must provide save name after command."); return; }
+        if (tokens.size() <= 1) { sendMessageToChannel(message->channel_id, "Must provide save name after command."); return; }
 
         std::stringstream ss; // Path to programsaves dir
         ss << database_handler::USER_DATA_PATH << "\\" << userId << "\\" << database_handler::PROGRAM_SAVES_DIR_NAME;
@@ -93,7 +97,7 @@ void BotClient::handleCommands(SleepyDiscord::Message *message)
     }
     else if (tokens[0].substr(1) == "runsaved")
     {
-        if (tokens.size() <= 1) { sendMessageToChannel("Must provide save name after command."); return; }
+        if (tokens.size() <= 1) { sendMessageToChannel(message->channel_id, "Must provide save name after command."); return; }
 
         EnvironmentSettings envSettings;
 
@@ -110,18 +114,18 @@ void BotClient::handleCommands(SleepyDiscord::Message *message)
                         envSettings.preloadedRegisters.push_back(std::pair(CPU::registerEncoding[tokens[i]], std::stoull(tokens[i+1])));
                     } catch (std::invalid_argument e)
                     {
-                        sendMessageToChannel("Provided register preload value is not a valid number.");
+                        sendMessageToChannel(message->channel_id, "Provided register preload value is not a valid number.");
                         return;
                     } catch (std::out_of_range e)
                     {
-                        sendMessageToChannel("Provided register preload value is out of range.");
+                        sendMessageToChannel(message->channel_id, "Provided register preload value is out of range.");
                         return;
                     }
                 } 
             }
         }
 
-        UserSettings settings = database_handler::getUserSettings(message->author.ID.number());
+        UserSettings settings = database_handler::getUserSettings(message->author.id);
 
         ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), settings.dumpMemory, settings.dumpFull, envSettings);
 
@@ -131,7 +135,7 @@ void BotClient::handleCommands(SleepyDiscord::Message *message)
 
 void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings userSettings)
 {
-    std::string fileName = "memoryDump.txt";
+    std::string fileName = "./memoryDump.txt";
 
     if (environment->compile())
     {
@@ -142,12 +146,13 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
             outfile << environment->preMemoryDump;
             outfile.close();
 
-            uploadFile(currentChannel, fileName, "Pre-execution State of Memory:");
-        }
+            dpp::message msg(environment->channelSentFromId, "Pre-execution State of Memory:"); 
+            msg.set_file_content(dpp::utility::read_file(fileName));
+            msg.set_filename(fileName);
 
-        if (environment->run())
-        {
-            database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
+            if (environment->run())
+            {
+                database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
 
                 if (userSettings.dumpMemory)
                 {
@@ -156,13 +161,18 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
                     outfile << environment->postMemoryDump;
                     outfile.close();
 
-                    uploadFile(currentChannel, fileName, "Post-execution State of Memory:");
+                    dpp::message msg(environment->channelSentFromId, "Post-execution State of Memory:"); 
+                    msg.set_file_content(dpp::utility::read_file(fileName));
+                    msg.set_filename(fileName);
                 }
 
-            if (!environment->clientTasks.consoleBuffer.empty())
-            {
-                sendMessageToChannel(environment->clientTasks.consoleBuffer);
+                if (!environment->clientTasks.consoleBuffer.empty())
+                {
+                    sendMessageToChannel(environment->channelSentFromId, environment->clientTasks.consoleBuffer);
+                }
             }
+            else sendMessageToChannel(environment->channelSentFromId, "Runtime Error:\n" + environment->clientTasks.consoleBuffer);
         }
     }
+    else sendMessageToChannel(environment->channelSentFromId, "Compilation Error:\n" + environment->clientTasks.consoleBuffer);
 }
