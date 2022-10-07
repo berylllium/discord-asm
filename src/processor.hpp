@@ -85,17 +85,17 @@ public:
         memory[PC++] = toWrite;
     }
 
-    Byte pull_stack(MEM& memory)
+    Byte pop_stack(MEM& memory)
     {
-        Byte toReturn = memory[SP.value];
+        Byte toReturn = memory[SP.value - 1];
         memory[--SP.value] = 0x00;
         return toReturn;
     }
 
-    Word pull_stack_word(MEM& memory)
+    Word pop_stack_word(MEM& memory)
     {
-        Byte a = memory[SP.value];
-        Byte b = memory[SP.value];
+        Byte a = memory[SP.value - 1];
+        Byte b = memory[SP.value - 2];
         memory[--SP.value] = 0x00;
         memory[--SP.value] = 0x00;
 

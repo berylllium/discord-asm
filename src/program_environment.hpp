@@ -18,6 +18,8 @@
 #include "instructions/jeq.hpp"
 #include "instructions/dec.hpp"
 #include "instructions/inc.hpp"
+#include "instructions/pusha.hpp"
+#include "instructions/popa.hpp"
 
 class ProgramEnvironment
 {
@@ -38,7 +40,8 @@ public:
         { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
         { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
         { "prtc", new Prtc() }, { "ret", new Ret() }, { "prtn", new Prtn() },
-        { "jeq", new Jeq() }, { "dec", new Dec() }, { "inc", new Inc() }
+        { "jeq", new Jeq() }, { "dec", new Dec() }, { "inc", new Inc() },
+        { "pusha", new Pusha() }, { "popa", new Popa() }
     };
     std::string programCode;
 

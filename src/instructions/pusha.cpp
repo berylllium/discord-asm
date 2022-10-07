@@ -20,7 +20,7 @@ bool Pusha::run(ADDRESSING_MODES addressingMode,
 {
     switch (addressingMode)
     {
-    case ADDRESSING_MODES::ABSOLUTE:
+    case ADDRESSING_MODES::IMPLICIT:
     {
         processor.push_stack(processor.AX.value, memory);
         processor.push_stack(processor.CX.value, memory);
@@ -28,12 +28,11 @@ bool Pusha::run(ADDRESSING_MODES addressingMode,
         processor.push_stack(processor.BX.value, memory);
 
         processor.push_stack(processor.BP.value, memory);
-        processor.push_stack(processor.SP.value, memory);
         processor.push_stack(processor.SI.value, memory);
         processor.push_stack(processor.DI.value, memory);
     }break;
     case ADDRESSING_MODES::IMMEDIATE:
-    case ADDRESSING_MODES::IMPLICIT:
+    case ADDRESSING_MODES::ABSOLUTE:
     case ADDRESSING_MODES::REGISTRY:
     case ADDRESSING_MODES::REGISTRY_POINTER:
     return false;
