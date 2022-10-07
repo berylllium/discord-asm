@@ -149,6 +149,8 @@ bool ProgramEnvironment::run()
     start_run_loop:
 
         Byte instruction = processor.read_byte(memory);
+
+        if (instruction == 0x00) break;
         
         for (auto const& x : CPU::instructionOpCodes) // String (name), Map (All addressing modes and op codes available)
         {
