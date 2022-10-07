@@ -33,7 +33,7 @@ bool Prtc::compile(std::string line,
         }
         else // Throw overflow
         {
-            clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, valueBits, 8);
+            clientTasks.consoleBuffer += asmutils::make_possible_overflow_exception(line, valueBits, 8);
             return false;
         }
     }

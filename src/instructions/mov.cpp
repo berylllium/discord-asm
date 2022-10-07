@@ -51,7 +51,7 @@ bool Mov::compile(std::string line,
             }
             else // Throw overflow
             {
-                clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
+                clientTasks.consoleBuffer += asmutils::make_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
                 //client->throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
                 return false;
             }

@@ -86,7 +86,7 @@ bool ProgramEnvironment::compile()
                     {
                         memory[compilerPointer++] = std::stoi(tokens[j], nullptr, 16);
                     }
-                    else { clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(lines[i], asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)), 8); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::make_possible_overflow_exception(lines[i], asmutils::get_bits(std::stoi(tokens[j], nullptr, 16)), 8); return false; }
                 }
             }
         }
@@ -102,7 +102,7 @@ bool ProgramEnvironment::compile()
                     {
                         labels[labelName] = compilerPointer;
                     }
-                    else { clientTasks.consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::make_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
                 }
                 else // Line is token + inline line
                 {
@@ -112,7 +112,7 @@ bool ProgramEnvironment::compile()
                     {
                         labels[labelName] = compilerPointer;
                     }
-                    else { clientTasks.consoleBuffer += asmutils::throw_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
+                    else { clientTasks.consoleBuffer += asmutils::make_label_already_defined_exception(lines[i], labelName, labels[labelName]); return false; }
 
                     tokens.erase(tokens.begin());
 
@@ -134,7 +134,7 @@ bool ProgramEnvironment::compile()
             memory[x.second] = (Byte)(labels[x.first] & 0x00FF);
             memory[x.second + 1] = (Byte)(labels[x.first] >> 8);
         }
-        else { clientTasks.consoleBuffer += asmutils::throw_label_not_found_exception(x.second, x.first); return false; }
+        else { clientTasks.consoleBuffer += asmutils::make_label_not_found_exception(x.second, x.first); return false; }
     }
 
     if (dumpMemory) preMemoryDump = dump_memory();

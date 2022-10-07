@@ -14,7 +14,7 @@ bool Inc::compile(std::string line,
         memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::ABSOLUTE];
         memory[compilerPointer++] = CPU::registerEncoding[tokens[1]];
     }
-    else { clientTasks.consoleBuffer += asmutils::throw_undefined_registry_exception(line, tokens[1]); return false; }
+    else { clientTasks.consoleBuffer += asmutils::make_undefined_registry_exception(line, tokens[1]); return false; }
 
     return true;
 }

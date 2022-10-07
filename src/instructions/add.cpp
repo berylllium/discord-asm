@@ -39,7 +39,7 @@ bool Add::compile(std::string line,
             }
             else // Throw overflow
             {
-                clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
+                clientTasks.consoleBuffer += asmutils::make_possible_overflow_exception(line, asmutils::get_bits(std::stoull(tokens[2], nullptr, 16)), asmutils::get_register_size(CPU::registerEncoding[tokens[1]]));
                 return false;
             }
         }
@@ -54,7 +54,7 @@ bool Add::compile(std::string line,
                 memory[compilerPointer++] = CPU::registerEncoding[tokens[1]];
                 memory[compilerPointer++] = CPU::registerEncoding[tokens[2]];
             }
-            else { clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, valueBits, regBits); return false; }
+            else { clientTasks.consoleBuffer += asmutils::make_possible_overflow_exception(line, valueBits, regBits); return false; }
         }
     }
 

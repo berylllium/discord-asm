@@ -32,11 +32,11 @@ namespace asmutils
 
     // Errors
 
-    std::string throw_undefined_registry_exception(std::string line, std::string registry);
-    std::string throw_undefined_instruction_exception(std::string line, std::string instruction);
-    std::string throw_possible_overflow_exception(std::string line, int provided, int expected);
-    std::string throw_instruction_exception(std::string line, int provided, int expected);
-    std::string throw_hex_string_format_exception(std::string line, std::string provided);
-    std::string throw_label_already_defined_exception(std::string line, std::string label, Word address);
-    std::string throw_label_not_found_exception(Word address, std::string label);
+    std::string make_undefined_registry_exception(std::string line, std::string registry);
+    std::string make_undefined_instruction_exception(std::string line, std::string instruction);
+    std::string make_possible_overflow_exception(std::string line, int provided, int expected);
+    std::string make_instruction_exception(std::string line, int provided, int expected);
+    std::string make_hex_string_format_exception(std::string line, std::string provided);
+    std::string make_label_already_defined_exception(std::string line, std::string label, Word address);
+    std::string make_label_not_found_exception(Word address, std::string label);
 }
