@@ -2,9 +2,9 @@
 
 ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channelId, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings)
 {
-    this->dumpMemory = dumpMemory;
+    this->dumpMemory = true;
     this->programCode = programCode;
-    this->dumpFull = dumpFull;
+    this->dumpFull = true;
     this->channelSentFromId = channelId;
 
     // instructionClasses =

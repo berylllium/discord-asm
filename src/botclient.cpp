@@ -146,9 +146,13 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
             outfile << environment->preMemoryDump;
             outfile.close();
 
-            dpp::message msg(environment->channelSentFromId, "Pre-execution State of Memory:"); 
-            msg.set_file_content(dpp::utility::read_file(fileName));
-            msg.set_filename(fileName);
+            {
+                dpp::message msg(environment->channelSentFromId, "Pre-execution State of Memory:"); 
+                msg.set_file_content(dpp::utility::read_file(fileName));
+                msg.set_filename(fileName);
+
+                message_create(msg);
+            }
 
             if (environment->run())
             {
@@ -161,9 +165,13 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
                     outfile << environment->postMemoryDump;
                     outfile.close();
 
-                    dpp::message msg(environment->channelSentFromId, "Post-execution State of Memory:"); 
-                    msg.set_file_content(dpp::utility::read_file(fileName));
-                    msg.set_filename(fileName);
+                    {
+                        dpp::message msg(environment->channelSentFromId, "Post-execution State of Memory:"); 
+                        msg.set_file_content(dpp::utility::read_file(fileName));
+                        msg.set_filename(fileName);
+
+                        message_create(msg);
+                    }
                 }
 
                 if (!environment->clientTasks.consoleBuffer.empty())
