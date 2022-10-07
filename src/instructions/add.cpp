@@ -8,7 +8,7 @@ bool Add::compile(std::string line,
                   std::map<std::string, Word>& labelReferences,
                   ClientTasks& clientTasks)
 {
-    if (CPU::registerEncoding.count(tokens[1]) > 0) // Destination exists
+    if (CPU::registerEncoding.count(tokens[1])) // Destination exists
     {
         if (asmutils::valid_hex_string(tokens[2])) // Value is a number
         {
@@ -43,6 +43,19 @@ bool Add::compile(std::string line,
                 return false;
             }
         }
+        else if (CPU::registerEncoding.count(tokens[2])) // Value is another register
+        {
+            int regBits = asmutils::get_register_size(CPU::registerEncoding[tokens[1]]);
+            int valueBits = asmutils::get_register_size(CPU::registerEncoding[tokens[2]]);
+
+            if (regBits >= valueBits)
+            {
+                memory[compilerPointer++] = CPU::instructionOpCodes[tokens[0]][ADDRESSING_MODES::REGISTRY];
+                memory[compilerPointer++] = CPU::registerEncoding[tokens[1]];
+                memory[compilerPointer++] = CPU::registerEncoding[tokens[2]];
+            }
+            else { clientTasks.consoleBuffer += asmutils::throw_possible_overflow_exception(line, valueBits, regBits); return false; }
+        }
     }
 
     return true;
@@ -71,9 +84,15 @@ bool Add::run(ADDRESSING_MODES addressingMode,
 
         processor.set_register_value(destinationEncoding, processor.get_register_value(destinationEncoding) + value);
     }break;
+    case ADDRESSING_MODES::REGISTRY:
+    {
+        Byte destinationEncoding = processor.read_byte(memory);
+        Byte valueEncoding = processor.read_byte(memory);
+
+        processor.set_register_value(destinationEncoding, processor.get_register_value(destinationEncoding) + processor.get_register_value(valueEncoding));
+    }break;
     case ADDRESSING_MODES::ABSOLUTE:
     case ADDRESSING_MODES::IMPLICIT:
-    case ADDRESSING_MODES::REGISTRY:
     case ADDRESSING_MODES::REGISTRY_POINTER:
     return false;
     }
