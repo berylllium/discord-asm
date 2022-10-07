@@ -15,6 +15,7 @@
 #include "instructions/prtc.hpp"
 #include "instructions/jmp.hpp"
 #include "instructions/prtn.hpp"
+#include "instructions/jeq.hpp"
 
 
 class ProgramEnvironment
@@ -35,7 +36,8 @@ public:
     {
         { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
         { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
-        { "prtc", new Prtc() }, { "ret", new Ret() }, { "prtn", new Prtn() }
+        { "prtc", new Prtc() }, { "ret", new Ret() }, { "prtn", new Prtn() },
+        { "jeq", new Jeq() }
     };
     std::string programCode;
 

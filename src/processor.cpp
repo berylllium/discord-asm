@@ -92,7 +92,14 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
             { ADDRESSING_MODES::REGISTRY, 0x12 },
             { ADDRESSING_MODES::REGISTRY_POINTER, 0x13 }
         }
+    },
+    {
+        "jeq",
+        {
+            { ADDRESSING_MODES::ABSOLUTE, 0x13 }
+        }
     }
+    
 };
 
 std::map<std::string, Byte> CPU::registerEncoding

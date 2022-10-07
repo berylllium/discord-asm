@@ -46,6 +46,8 @@ set(D_ASM_SOURCES
     instructions/popa.cpp
     instructions/prtn.hpp
     instructions/prtn.cpp
+    instructions/jeq.hpp
+    instructions/jeq.cpp
     user_settings.hpp
     database_handler.hpp
     environment_settings.hpp
