@@ -141,14 +141,9 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
     {
         if (environment->dumpMemory)
         {
-            if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
-            std::ofstream outfile(fileName);
-            outfile << environment->preMemoryDump;
-            outfile.close();
-
             {
                 dpp::message msg(environment->channelSentFromId, "Pre-execution State of Memory:"); 
-                msg.set_file_content(dpp::utility::read_file(fileName));
+                msg.set_file_content(environment->preMemoryDump);
                 msg.set_filename(fileName);
 
                 message_create(msg);
@@ -160,14 +155,9 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
 
                 if (environment->dumpMemory)
                 {
-                    if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
-                    std::ofstream outfile(fileName);
-                    outfile << environment->postMemoryDump;
-                    outfile.close();
-
                     {
                         dpp::message msg(environment->channelSentFromId, "Post-execution State of Memory:"); 
-                        msg.set_file_content(dpp::utility::read_file(fileName));
+                        msg.set_file_content(environment->postMemoryDump);
                         msg.set_filename(fileName);
 
                         message_create(msg);
