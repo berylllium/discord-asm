@@ -1,22 +1,5 @@
 #include "processor.hpp"
 
-//static constexpr Byte // Op Codes
-//INS_MOV_AS = 0x01,
-//INS_MOV_IM = 0x02,
-//INS_CMP_IM = 0x03,
-//INS_JNE = 0x04,
-//INS_PUSHA = 0x05,
-//INS_POPA = 0x06,
-//INS_JMP = 0x07,
-//INS_CALL = 0x08,
-//INS_RET = 0x09,
-//INS_PRTC_IM = 0x0A,
-//INS_ADD_IM = 0x0B,
-//INS_MOV_RV = 0x0C,
-//INS_PRTC_RV = 0x0D,
-//// Pseudo Ops
-//INS_DB = 0xF0;
-
 std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
 {
     {
@@ -96,7 +79,19 @@ std::map<std::string, std::map<ADDRESSING_MODES, Byte>> CPU::instructionOpCodes
     {
         "jeq",
         {
-            { ADDRESSING_MODES::ABSOLUTE, 0x13 }
+            { ADDRESSING_MODES::ABSOLUTE, 0x14 }
+        }
+    },
+    {
+        "dec",
+        {
+            { ADDRESSING_MODES::ABSOLUTE, 0x15 }
+        }
+    },
+    {
+        "inc",
+        {
+            { ADDRESSING_MODES::ABSOLUTE, 0x16 }
         }
     }
     

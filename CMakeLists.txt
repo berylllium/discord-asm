@@ -48,6 +48,10 @@ set(D_ASM_SOURCES
     instructions/prtn.cpp
     instructions/jeq.hpp
     instructions/jeq.cpp
+    instructions/inc.hpp
+    instructions/inc.cpp
+    instructions/dec.hpp
+    instructions/dec.cpp
     user_settings.hpp
     database_handler.hpp
     environment_settings.hpp

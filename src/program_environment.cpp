@@ -7,15 +7,6 @@ ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channel
     this->dumpFull = true;
     this->channelSentFromId = channelId;
 
-    // instructionClasses =
-    // {
-    //     { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
-    //     { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
-    //     { "prtc", new Prtc() }, { "ret", new Ret() }
-    // };
-
-    // Preload environment settings
-
     for (int i = 0; i < environmentSettings.preloadedRegisters.size(); i++) {
         processor.set_register_value(environmentSettings.preloadedRegisters[i].first, environmentSettings.preloadedRegisters[i].second);
     }

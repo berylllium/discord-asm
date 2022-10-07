@@ -16,7 +16,8 @@
 #include "instructions/jmp.hpp"
 #include "instructions/prtn.hpp"
 #include "instructions/jeq.hpp"
-
+#include "instructions/dec.hpp"
+#include "instructions/inc.hpp"
 
 class ProgramEnvironment
 {
@@ -37,7 +38,7 @@ public:
         { "mov", new Mov() }, { "cmp", new Cmp() }, { "jne", new Jne() },
         { "add", new Add() }, { "call", new Call() }, { "jmp", new Jmp() },
         { "prtc", new Prtc() }, { "ret", new Ret() }, { "prtn", new Prtn() },
-        { "jeq", new Jeq() }
+        { "jeq", new Jeq() }, { "dec", new Dec() }, { "inc", new Inc() }
     };
     std::string programCode;
 

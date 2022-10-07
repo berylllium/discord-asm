@@ -158,7 +158,7 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
             {
                 database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
 
-                if (userSettings.dumpMemory)
+                if (environment->dumpMemory)
                 {
                     if (static_cast<bool>(std::ifstream(fileName))) std::remove(fileName.c_str());
                     std::ofstream outfile(fileName);
