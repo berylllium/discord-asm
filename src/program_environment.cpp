@@ -101,6 +101,7 @@ bool ProgramEnvironment::compile()
             }
             else // Throw undefined operation exception
             {
+                clientTasks.consoleBuffer += asmutils::make_undefined_instruction_exception(lines[i], tokens[0]);
                 return false;
             }
         }
