@@ -27,35 +27,15 @@ bool ProgramEnvironment::compile()
 
     Word compilerPointer = 0x200;
 
-    std::vector<std::string> lines;
-
-    { // I hate this so much
-        std::stringstream stream(programCode);
-
-        std::string intermediate;
-
-        while (std::getline(stream, intermediate, '\n'))
-        {
-            lines.push_back(intermediate);
-        }
-    }
+    std::vector<std::string> lines = asmutils::split(programCode, '\n');
 
     for (int i = 0; i < lines.size(); i++)
     {
-        std::vector<std::string> tokens;
-
-        { // I hate this so much x2
-            std::stringstream stream(lines[i]);
-
-            std::string intermediate;
-
-            while (std::getline(stream, intermediate, ' '))
-            {
-                if (intermediate.empty()) continue;
-                if (intermediate.rfind(',') == intermediate.length() - 1) intermediate = intermediate.substr(0, intermediate.length() - 1);
-                tokens.push_back(intermediate);
-            }
-        }
+        std::vector<std::string> tokens = asmutils::split(lines[i], ' ', [](std::string& s) -> bool {
+            if (s.empty()) return false;
+            if (s.rfind(',') == s.length() - 1) s = s.substr(0, s.length() - 1);
+            return true;
+        });
 
         if (tokens.empty()) continue; // Empty line
 

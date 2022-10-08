@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include <functional>
 #include "definitions.hpp"
 
 namespace asmutils
@@ -22,6 +23,7 @@ namespace asmutils
     int get_register_size(Byte encoding);
 
     std::vector<std::string> split(std::string text, char delim);
+    std::vector<std::string> split(std::string text, char delim, std::function<bool(std::string&)> op);
     std::deque<std::string> split_deque(std::string text, char delim);
 
     template<class K, class V>

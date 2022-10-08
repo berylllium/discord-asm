@@ -64,6 +64,19 @@ std::vector<std::string> asmutils::split(std::string text, char delim)
     return vec;
 }
 
+std::vector<std::string> asmutils::split(std::string text, char delim, std::function<bool(std::string&)> op)
+{
+    std::string line;
+    std::vector<std::string> vec;
+    std::stringstream ss(text);
+    while (std::getline(ss, line, delim))
+    {
+        if (!op(line)) continue;
+        vec.push_back(line);
+    }
+    return vec;
+}
+
 std::deque<std::string> asmutils::split_deque(std::string text, char delim)
 {
     std::string line;
