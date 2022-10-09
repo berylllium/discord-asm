@@ -26,7 +26,7 @@ const void BotClient::onMessage(const dpp::message_create_t *event)
 
         UserSettings settings = database_handler::getUserSettings(event->msg.author.id);
 
-        ProgramEnvironment environment(messageContent, event->msg.channel_id, settings.dumpMemory, settings.dumpFull, EnvironmentSettings {});
+        ProgramEnvironment environment(messageContent, event->msg.channel_id, settings, EnvironmentSettings {});
 
         runEnvironment(&environment, settings);
     }
@@ -127,7 +127,7 @@ void BotClient::handleCommands(const dpp::message *message)
 
         UserSettings settings = database_handler::getUserSettings(message->author.id);
 
-        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), message->channel_id, settings.dumpMemory, settings.dumpFull, envSettings);
+        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), message->channel_id, settings, envSettings);
 
         runEnvironment(&environment, settings);
     }

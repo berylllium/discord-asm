@@ -1,10 +1,10 @@
 #include "program_environment.hpp"
 
-ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channelId, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings)
+ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channelId, UserSettings uSettings, EnvironmentSettings environmentSettings)
 {
-    this->dumpMemory = true;
+    this->dumpMemory = uSettings.dumpMemory;
+    this->dumpFull = uSettings.dumpFull;
     this->programCode = programCode;
-    this->dumpFull = true;
     this->channelSentFromId = channelId;
 
     for (int i = 0; i < environmentSettings.preloadedRegisters.size(); i++) {

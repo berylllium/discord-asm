@@ -5,6 +5,7 @@
 #include "processor.hpp"
 #include "client_tasks.hpp"
 #include "environment_settings.hpp"
+#include "user_settings.hpp"
 
 #include "instructions/mov.hpp"
 #include "instructions/cmp.hpp"
@@ -29,7 +30,7 @@ private:
     MEM memory;
 
 public:
-    ProgramEnvironment(std::string programCode, uint64_t channelId, bool dumpMemory, bool dumpFull, EnvironmentSettings environmentSettings);
+    ProgramEnvironment(std::string programCode, uint64_t channelId, UserSettings uSettings, EnvironmentSettings environmentSettings);
     ~ProgramEnvironment();
 
 public:
