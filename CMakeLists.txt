@@ -54,11 +54,15 @@ set(D_ASM_SOURCES
     instructions/dec.cpp
     user_settings.hpp
     database_handler.hpp
+    database_handler.cpp
     environment_settings.hpp
 )
 list (TRANSFORM D_ASM_SOURCES PREPEND "src/")
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DPP_LIBS}") 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${DPP_LIBS} -l sqlite3") 
+
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add source to this project's executable.
 add_executable(discord-asm ${D_ASM_SOURCES})

@@ -24,7 +24,7 @@ const void BotClient::onMessage(const dpp::message_create_t *event)
     {
         messageContent = messageContent.substr(6, messageContent.length() - 9);
 
-        UserSettings settings = database_handler::getUserSettings(event->msg.author.id);
+        UserSettings settings = database_handler::get_user_settings(event->msg.author.id);
 
         ProgramEnvironment environment(messageContent, event->msg.channel_id, settings, EnvironmentSettings {});
 
@@ -50,15 +50,15 @@ void BotClient::handleCommands(const dpp::message *message)
         {
             if (tokens[2] == "true")
             {
-                UserSettings settings = database_handler::getUserSettings(userId);
+                UserSettings settings = database_handler::get_user_settings(userId);
                 settings.dumpMemory = true;
-                database_handler::setUserSettings(userId, settings);
+                database_handler::save_user_settings(settings);
             }
             else if (tokens[2] == "false")
             {
-                UserSettings settings = database_handler::getUserSettings(userId);
+                UserSettings settings = database_handler::get_user_settings(userId);
                 settings.dumpMemory = false;
-                database_handler::setUserSettings(userId, settings);
+                database_handler::save_user_settings(settings);
             }
             else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
         }
@@ -66,15 +66,15 @@ void BotClient::handleCommands(const dpp::message *message)
         {
             if (tokens[2] == "true")
             {
-                UserSettings settings = database_handler::getUserSettings(userId);
+                UserSettings settings = database_handler::get_user_settings(userId);
                 settings.dumpFull = true;
-                database_handler::setUserSettings(userId, settings);
+                database_handler::save_user_settings(settings);
             }
             else if (tokens[2] == "false")
             {
-                UserSettings settings = database_handler::getUserSettings(userId);
+                UserSettings settings = database_handler::get_user_settings(userId);
                 settings.dumpFull = false;
-                database_handler::setUserSettings(userId, settings);
+                database_handler::save_user_settings(settings);
             }
             else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
         }
@@ -84,7 +84,7 @@ void BotClient::handleCommands(const dpp::message *message)
         if (tokens.size() <= 1) { sendMessageToChannel(message->channel_id, "Must provide save name after command."); return; }
 
         std::stringstream ss; // Path to programsaves dir
-        ss << database_handler::USER_DATA_PATH << "\\" << userId << "\\" << database_handler::PROGRAM_SAVES_DIR_NAME;
+        //ss << database_handler::USER_DATA_PATH << "\\" << userId << "\\" << database_handler::PROGRAM_SAVES_DIR_NAME;
 
 
         std::ifstream src(ss.str() + "\\_programsave_last.txt");
@@ -125,11 +125,11 @@ void BotClient::handleCommands(const dpp::message *message)
             }
         }
 
-        UserSettings settings = database_handler::getUserSettings(message->author.id);
+        UserSettings settings = database_handler::get_user_settings(message->author.id);
 
-        ProgramEnvironment environment(database_handler::getProgramCode(userId, tokens[1]), message->channel_id, settings, envSettings);
+        // ProgramEnvironment environment(database_handler::getProgramCde(userId, tokens[1]), message->channel_id, settings, envSettings);
 
-        runEnvironment(&environment, settings);
+        // runEnvironment(&environment, UserSettings {0, false, false});
     }
 }
 
@@ -151,7 +151,7 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
 
             if (environment->run())
             {
-                database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
+                //database_handler::saveProgramCode(userSettings.userID, "last", environment->programCode, true);
 
                 if (environment->dumpMemory)
                 {

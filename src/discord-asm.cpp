@@ -2,6 +2,8 @@
 
 int main()
 {
+    database_handler::initialize_database();
+
     std::ifstream infile("./token.txt");
     std::stringstream ss;
 
@@ -12,4 +14,8 @@ int main()
     BotClient client(ss.str());
 
     client.start(dpp::st_wait);
+
+    database_handler::close_database();
+
+    return 0;
 }
