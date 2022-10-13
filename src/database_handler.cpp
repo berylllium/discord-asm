@@ -11,6 +11,11 @@ bool database_handler::initialize_database()
                             "UserID UNSIGNED BIGINT NOT NULL," \
                             "dumpMemory BOOL," \
                             "dumpFull BOOL" \
+                            ");" \
+                            "CREATE TABLE IF NOT EXISTS ProgramCode(" \
+                            "UserID UNSIGNED BIGINT NOT NULL," \
+                            "Name TEXT," \
+                            "Code TEXT" \
                             ");";
     
     sqlite3_exec(database_handler::user_database, create_t.c_str(),
@@ -26,10 +31,6 @@ void database_handler::close_database()
 
 bool database_handler::save_user_settings(UserSettings user_settings)
 {
-    std::string exec = "INSERT INTO Users (UserID, dumpMemory, dumpFull)" \
-                        "VALUES (" + std::to_string(user_settings.userID) + ", " +
-                        std::to_string(user_settings.dumpMemory) + ", " \
-                        ;
     std::stringstream ss;
 
     ss << "INSERT INTO Users (UserID, dumpMemory, dumpFull) VALUES (" <<
@@ -41,9 +42,9 @@ bool database_handler::save_user_settings(UserSettings user_settings)
     sqlite3_exec(database_handler::user_database, ss.str().c_str(),
                 [](void* nu, int arc, char** argv, char** colName){return 0;}, 0, &error);
 
-    sqlite3_free(error); 
-    if (error != NULL) return false;
     
+    if (error != NULL) {sqlite3_free(error); return false;}
+    sqlite3_free(error); 
 
     return true;
 }
@@ -69,11 +70,59 @@ UserSettings database_handler::get_user_settings(uint64_t user_id)
                 },
                 &settings, &error);
     
+    
+    if (error != NULL) {sqlite3_free(error); return settings;}
     sqlite3_free(error); 
-    if (error != NULL) return settings;
 
     settings.userID = user_id; // Do this so that when an error occurs, the userID within the returned settings object
                                // is set to 0, and it is possible to see an arror ocurred.
 
     return settings;
+}
+
+bool database_handler::save_program_code(std::string code, uint64_t user_id, std::string name)
+{
+    std::stringstream ss;
+
+    ss << "INSERT INTO ProgramCode (UserID, Name, Code) VALUES (" <<
+    user_id << ", " <<
+    "\"" << name << "\", " <<
+    "\"" << code << "\");";
+
+    char* error;
+    sqlite3_exec(database_handler::user_database, ss.str().c_str(),
+                [](void* nu, int arc, char** argv, char** colName){return 0;}, 0, &error);
+
+
+    if (error != NULL) {sqlite3_free(error); return false;}
+    sqlite3_free(error); 
+
+    return true;
+}
+
+std::string database_handler::get_program_code(uint64_t user_id, std::string name)
+{
+    std::stringstream ss;
+
+    ss << "SELECT Code FROM ProgramCode WHERE UserID=" << user_id << " AND Name=\"" << name << "\";";
+
+    std::string code = "";
+
+    char* error;
+    sqlite3_exec(database_handler::user_database, ss.str().c_str(),
+                [](void* pv, int arc, char** argv, char** colName) 
+                {
+                    std::string* ptr = static_cast<std::string*>(pv);
+
+                    *ptr = argv[0];
+
+                    return 0;
+                },
+                &code, &error);
+    
+     
+    if (error != NULL) {sqlite3_free(error); return "";}
+    sqlite3_free(error); 
+
+    return code;
 }

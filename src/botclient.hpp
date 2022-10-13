@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dpp/dpp.h"
+#include <dpp/dpp.h>
 #include "program_environment.hpp"
 #include "definitions.hpp"
 #include "user_settings.hpp"
@@ -14,15 +14,16 @@ public:
     std::string prefix = ",";
     BotClient(std::string token);
 
-    const void onMessage(const dpp::message_create_t *message);
+    void on_ready_event(const dpp::ready_t *ready_event);
+    const void on_message_create_event(const dpp::message_create_t *message);
 
-    void sendMessageToChannel(dpp::snowflake channelId, std::string content);
+    void send_message_to_channel(dpp::snowflake channelId, std::string content);
 
 
 private:
     dpp::snowflake currentChannel;
 
-    void handleCommands(const dpp::message *message);
+    void on_slashcommand_event(const dpp::slashcommand_t *event);
 
-    void runEnvironment(ProgramEnvironment *environment, UserSettings userSettings);
+    void run_environment(ProgramEnvironment *environment, UserSettings userSettings);
 };

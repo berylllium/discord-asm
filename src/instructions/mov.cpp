@@ -71,7 +71,6 @@ bool Mov::compile(std::string line,
         ss << "Exception while compiling code. At line: `" << line << "`. ArgumentException: Provided argument `" << tokens[1] << "` is an invalid argument.";
 
         clientTasks.consoleBuffer += ss.str();
-        //client->sendMessageToChannel(ss.str());
         return false;
     }
 

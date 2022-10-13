@@ -3,13 +3,25 @@
 BotClient::BotClient(std::string token) : dpp::cluster(token,
 dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_messages)
 {
-    on_message_create([this](const dpp::message_create_t &m) {
-        onMessage(&m);
-        
-        });
+    on_ready([this](const dpp::ready_t &e) {on_ready_event(&e); });
+    on_message_create([this](const dpp::message_create_t &m) {on_message_create_event(&m);});
+    on_slashcommand([this](const dpp::slashcommand_t &e) {on_slashcommand_event(&e); });
 }
 
-const void BotClient::onMessage(const dpp::message_create_t *event)
+void BotClient::on_ready_event(const dpp::ready_t *ready_event)
+{
+    bool debugging = true;
+    if (dpp::run_once<struct register_bot_commands>() || debugging)
+    {
+        dpp::slashcommand csettings("settings", "Edit user settings.", this->me.id);
+        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_memory", "Wether the bot will dump memory after compilation & execution."));
+        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_full", "Wether the bot will do a full dump (~240KB) or a minimal dump (~1KB)."));
+
+        global_command_create(csettings);
+    }
+}
+
+const void BotClient::on_message_create_event(const dpp::message_create_t *event)
 {
     if (event->msg.author.is_bot()) return;
     
@@ -17,8 +29,6 @@ const void BotClient::onMessage(const dpp::message_create_t *event)
 
     std::string messageContent = event->msg.content;
 
-
-    if (messageContent.find(prefix, 0) == 0) { handleCommands(&event->msg); return; }
 
     if (messageContent.find("```\n&\n", 0) == 0)
     {
@@ -28,112 +38,58 @@ const void BotClient::onMessage(const dpp::message_create_t *event)
 
         ProgramEnvironment environment(messageContent, event->msg.channel_id, settings, EnvironmentSettings {});
 
-        runEnvironment(&environment, settings);
+        run_environment(&environment, settings);
     }
 }
 
-void BotClient::sendMessageToChannel(dpp::snowflake channelId, std::string content)
+void BotClient::send_message_to_channel(dpp::snowflake channelId, std::string content)
 {
     message_create(dpp::message(channelId, content));
 }
 
-void BotClient::handleCommands(const dpp::message *message)
+void BotClient::on_slashcommand_event(const dpp::slashcommand_t *event)
 {
-    std::vector<std::string> tokens = asmutils::split(message->content, ' ');
+    dpp::command_value EMPTY_PARAM = dpp::command_value();
 
-    uint64_t userId = message->author.id;
-
-    if (tokens[0].substr(1) == "settings")
+    if (event->command.get_command_name() == "settings")
     {
-        if (tokens.size() < 3) { sendMessageToChannel(message->channel_id, "User has not provided enough arguments. Please try again."); return; }
-        if (tokens[1] == "dumpMemory")
+        bool params = false;
+        UserSettings u_settings = database_handler::get_user_settings(event->command.member.user_id);
+        
+        dpp::command_value cv_dump_memory = event->get_parameter("dump_memory");
+        dpp::command_value cv_dump_full = event->get_parameter("dump_full");
+
+        if (cv_dump_memory != EMPTY_PARAM) 
         {
-            if (tokens[2] == "true")
-            {
-                UserSettings settings = database_handler::get_user_settings(userId);
-                settings.dumpMemory = true;
-                database_handler::save_user_settings(settings);
-            }
-            else if (tokens[2] == "false")
-            {
-                UserSettings settings = database_handler::get_user_settings(userId);
-                settings.dumpMemory = false;
-                database_handler::save_user_settings(settings);
-            }
-            else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
+            params = true;
+            u_settings.dumpMemory = std::get<bool>(cv_dump_memory);
         }
-        else if (tokens[1] == "dumpFull")
+        if (cv_dump_full != EMPTY_PARAM)
         {
-            if (tokens[2] == "true")
-            {
-                UserSettings settings = database_handler::get_user_settings(userId);
-                settings.dumpFull = true;
-                database_handler::save_user_settings(settings);
-            }
-            else if (tokens[2] == "false")
-            {
-                UserSettings settings = database_handler::get_user_settings(userId);
-                settings.dumpFull = false;
-                database_handler::save_user_settings(settings);
-            }
-            else sendMessageToChannel(message->channel_id, "Third argument must be either 'true' or 'false'.");
+            params = true;
+            u_settings.dumpFull = std::get<bool>(cv_dump_full);
         }
-    }
-    else if (tokens[0].substr(1) == "savelast")
-    {
-        if (tokens.size() <= 1) { sendMessageToChannel(message->channel_id, "Must provide save name after command."); return; }
-
-        std::stringstream ss; // Path to programsaves dir
-        //ss << database_handler::USER_DATA_PATH << "\\" << userId << "\\" << database_handler::PROGRAM_SAVES_DIR_NAME;
-
-
-        std::ifstream src(ss.str() + "\\_programsave_last.txt");
-        std::ofstream dst(ss.str() + "\\programsave_" + tokens[1] + ".txt");
-
-        dst << src.rdbuf();
-
-        dst.close();
-        src.close();
-    }
-    else if (tokens[0].substr(1) == "runsaved")
-    {
-        if (tokens.size() <= 1) { sendMessageToChannel(message->channel_id, "Must provide save name after command."); return; }
-
-        EnvironmentSettings envSettings;
-
-        // Check for register preloads
-        if (tokens.size() > 2 && (tokens.size() - 2) % 2 == 0) // Valid amount of parameters
+        
+        if (params)
         {
-            for (int i = 2; i - 2 < (tokens.size() - 2) / 2; i += 2) // Loop through every pair
-            {
-                // Check if valid register
-                if (CPU::registerEncoding.count(tokens[i]) > 0)
-                {
-                    try
-                    {
-                        envSettings.preloadedRegisters.push_back(std::pair(CPU::registerEncoding[tokens[i]], std::stoull(tokens[i+1])));
-                    } catch (std::invalid_argument e)
-                    {
-                        sendMessageToChannel(message->channel_id, "Provided register preload value is not a valid number.");
-                        return;
-                    } catch (std::out_of_range e)
-                    {
-                        sendMessageToChannel(message->channel_id, "Provided register preload value is out of range.");
-                        return;
-                    }
-                } 
-            }
+            bool s = database_handler::save_user_settings(u_settings);
+
+            dpp::message msg = s ? dpp::message("Sucessfuly saved settings.") : dpp::message("Something went wrong. Please contact a moderator.");
+            msg.set_flags(dpp::message_flags::m_ephemeral);
+            event->reply(msg);
+        }
+        else
+        {
+            dpp::message msg = dpp::message("Currently unimplemented.");
+            msg.set_flags(dpp::message_flags::m_ephemeral);
+            event->reply(msg);
         }
 
-        UserSettings settings = database_handler::get_user_settings(message->author.id);
-
-        // ProgramEnvironment environment(database_handler::getProgramCde(userId, tokens[1]), message->channel_id, settings, envSettings);
-
-        // runEnvironment(&environment, UserSettings {0, false, false});
+        return;
     }
 }
 
-void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings userSettings)
+void BotClient::run_environment(ProgramEnvironment* environment, UserSettings userSettings)
 {
     std::string fileName = "./memoryDump.txt";
 
@@ -166,11 +122,11 @@ void BotClient::runEnvironment(ProgramEnvironment* environment, UserSettings use
 
                 if (!environment->clientTasks.consoleBuffer.empty())
                 {
-                    sendMessageToChannel(environment->channelSentFromId, environment->clientTasks.consoleBuffer);
+                    send_message_to_channel(environment->channelSentFromId, environment->clientTasks.consoleBuffer);
                 }
             }
-            else sendMessageToChannel(environment->channelSentFromId, "Runtime Error:\n" + environment->clientTasks.consoleBuffer);
+            else send_message_to_channel(environment->channelSentFromId, "Runtime Error:\n" + environment->clientTasks.consoleBuffer);
         }
     }
-    else sendMessageToChannel(environment->channelSentFromId, "Compilation Error:\n" + environment->clientTasks.consoleBuffer);
+    else send_message_to_channel(environment->channelSentFromId, "Compilation Error:\n" + environment->clientTasks.consoleBuffer);
 }
