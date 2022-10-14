@@ -14,8 +14,8 @@ void BotClient::on_ready_event(const dpp::ready_t *ready_event)
     if (dpp::run_once<struct register_bot_commands>() || debugging)
     {
         dpp::slashcommand csettings("settings", "Edit user settings.", this->me.id);
-        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_memory", "Wether the bot will dump memory after compilation & execution."));
-        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_full", "Wether the bot will do a full dump (~240KB) or a minimal dump (~1KB)."));
+        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_memory", "Whether the bot will dump memory after compilation & execution."));
+        csettings.add_option(dpp::command_option(dpp::co_boolean, "dump_full", "Whether the bot will do a full dump (~240KB) or a minimal dump (~1KB)."));
 
         global_command_create(csettings);
     }
