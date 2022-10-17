@@ -31,6 +31,7 @@ namespace asmutils
 
     template<class K, class V>
     K map_get_key_from_value(std::map<K, V> map, V value);
+    
 
     // Errors
 
@@ -41,4 +42,6 @@ namespace asmutils
     std::string make_hex_string_format_exception(std::string line, std::string provided);
     std::string make_label_already_defined_exception(std::string line, std::string label, Word address);
     std::string make_label_not_found_exception(Word address, std::string label);
+    std::string make_invalid_parameter_placeholder_exception(std::string line, std::string placeholder);
+    std::string make_undefined_parameter_placeholder_exception(std::string line, std::string placeholder);
 }

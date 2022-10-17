@@ -34,6 +34,7 @@ public:
     ~ProgramEnvironment();
 
 public:
+    EnvironmentSettings environment_settings;
     bool dumpMemory, dumpFull;
 
     std::map<std::string, InstructionBase*> instructionClasses

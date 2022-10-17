@@ -1,9 +1,12 @@
 #pragma once
 
+#include <map>
+#include <string>
 #include <vector>
-#include <utility>
+#include <cstdint>
 
 struct EnvironmentSettings
 {
-	std::vector<std::pair<uint8_t, uint64_t>> preloadedRegisters;
+	std::map<std::string, std::string> parameters;
+	std::vector<std::pair<uint8_t, uint64_t>> preloaded_registers;
 };

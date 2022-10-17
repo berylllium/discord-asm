@@ -2,13 +2,14 @@
 
 ProgramEnvironment::ProgramEnvironment(std::string programCode, uint64_t channelId, UserSettings uSettings, EnvironmentSettings environmentSettings)
 {
+    this->environment_settings = environmentSettings;
     this->dumpMemory = uSettings.dumpMemory;
     this->dumpFull = uSettings.dumpFull;
     this->programCode = programCode;
     this->channelSentFromId = channelId;
 
-    for (int i = 0; i < environmentSettings.preloadedRegisters.size(); i++) {
-        processor.set_register_value(environmentSettings.preloadedRegisters[i].first, environmentSettings.preloadedRegisters[i].second);
+    for (int i = 0; i < environmentSettings.preloaded_registers.size(); i++) {
+        processor.set_register_value(environmentSettings.preloaded_registers[i].first, environmentSettings.preloaded_registers[i].second);
     }
 }
 
@@ -38,6 +39,38 @@ bool ProgramEnvironment::compile()
         });
 
         if (tokens.empty()) continue; // Empty line
+
+        // Check and replace any template placeholders
+        for (int j = 0; j < tokens.size(); j++)
+        {
+            int hyphen_pos = tokens[j].find('-');
+            int start_bracket_pos = tokens[j].find('{');
+            int end_bracket_pos = tokens[j].find("}");
+
+            if (hyphen_pos != std::string::npos && start_bracket_pos != std::string::npos && end_bracket_pos != std::string::npos) // Placeholder characters exist.
+            {
+                if (start_bracket_pos - hyphen_pos == 1 && end_bracket_pos > start_bracket_pos) // Valid parameter placeholder.
+                {
+                    std::string placeholder_name = tokens[j].substr(start_bracket_pos + 1, end_bracket_pos - start_bracket_pos - 1);
+
+                    if (environment_settings.parameters.contains(placeholder_name))
+                    {
+                        std::string repl = environment_settings.parameters[placeholder_name];
+                        tokens[j].replace(hyphen_pos, placeholder_name.length() + 3, repl);
+                    }
+                    else
+                    {
+                        clientTasks.consoleBuffer += asmutils::make_undefined_parameter_placeholder_exception(lines[i], tokens[j]);
+                        return false;
+                    }
+                }
+                else
+                {
+                    clientTasks.consoleBuffer += asmutils::make_invalid_parameter_placeholder_exception(lines[i], tokens[j]);
+                    return false;
+                }
+            }
+        }
 
     begin_check:
 

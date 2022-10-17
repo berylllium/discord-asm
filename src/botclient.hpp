@@ -24,6 +24,8 @@ private:
     dpp::snowflake currentChannel;
 
     void on_slashcommand_event(const dpp::slashcommand_t *event);
+    void on_message_context_menu_event(const dpp::message_context_menu_t *event);
+    void on_form_submit_event(const dpp::form_submit_t *event);
 
-    void run_environment(ProgramEnvironment *environment, UserSettings userSettings);
+    void run_environment(ProgramEnvironment *environment);
 };

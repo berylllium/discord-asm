@@ -167,3 +167,19 @@ std::string asmutils::make_label_not_found_exception(Word address, std::string l
 
     return ss.str();
 }
+
+std::string asmutils::make_invalid_parameter_placeholder_exception(std::string line, std::string placeholder)
+{
+    std::stringstream ss;
+    ss << "Exception while compiling code. At line: `" << line << "`. Invalid Parameter Placeholder Exception: Provided placeholder `" << placeholder << "` is invalid. Please follow the following template: `-{placeholder_name}`.";
+
+    return ss.str();
+}
+
+std::string asmutils::make_undefined_parameter_placeholder_exception(std::string line, std::string placeholder)
+{
+    std::stringstream ss;
+    ss << "Exception while compiling code. At line: `" << line << "`. Undefined Parameter Placeholder Exception: Provided placeholder `" << placeholder << "` is undefined.";
+
+    return ss.str();
+}

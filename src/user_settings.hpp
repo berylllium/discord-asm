@@ -6,5 +6,5 @@
 struct UserSettings
 {
     uint64_t userID;
-    bool dumpMemory, dumpFull;
+    bool dumpMemory, dumpFull, run_on_post;
 };
