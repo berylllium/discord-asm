@@ -13,7 +13,7 @@ Tired of restrictive bot commands? Want to have a command for every one of your 
 
 
 ## What is discord-asm?
-On a more serious note, discord-asm, short for discord assembly, is a bot that interprets user written assembly code and executes it in objects called "environments". Environments have access to the servers ins-and-outs. Like, creating channels, kicking users, removing messages in a given channel, sending messages in a given channel, banning users, creating roles, adding roles to members, etc. Basically, anything a regular old bot can do. The server owner can configure environments to allow or disallow things users can access inside an environment.
+On a more serious note, discord-asm, short for discord assembly, is a bot that compiles user written assembly code and executes it in objects called "environments". Environments have access to the servers ins-and-outs. Like, creating channels, kicking users, removing messages in a given channel, sending messages in a given channel, banning users, creating roles, adding roles to members, etc. Basically, anything a regular old bot can do. The server owner can configure environments to allow or disallow things users can access inside an environment.
 
 > Note that many features are currently not implemented. Check [Instructions](#instructions) for all of the currently implemented instructions.
 
